@@ -258,6 +258,10 @@
             btnDownload.innerHTML = '<i class="fas fa-check-circle"></i> <span>Sudah Tersimpan Offline</span>';
             btnDownload.classList.remove('bg-white/10', 'hover:bg-white/20');
             btnDownload.classList.add('bg-green-600/50');
+            // Show repair hint
+            updateNotification.innerHTML = '<i class="fas fa-info-circle mr-1"></i> Klik tombol untuk repair/download ulang jika ada masalah.';
+            updateNotification.classList.remove('hidden', 'text-yellow-400');
+            updateNotification.classList.add('text-gray-400');
         } else if (wasDownloaded && needsUpdate) {
             // Downloaded before but there's new/updated content
             let updateMessage = '';
@@ -280,15 +284,21 @@
         }
         // else: Never downloaded - keep default state
 
-        btnDownload.addEventListener('click', async function() {
-            // Prevent double click
-            if (this.disabled) return;
-            this.disabled = true;
+        // =============================================
+        // MANUAL DOWNLOAD FUNCTION (Delegated to Service Worker)
+        // =============================================
+        // =============================================
+        // MANUAL DOWNLOAD FUNCTION (Frontend Smart Loop)
+        // =============================================
+        async function startDownload() {
+            // Prevent double run
+            if (btnDownload.disabled) return;
+            btnDownload.disabled = true;
             
-            // Show progress
+            // Show progress UI
             progressWrapper.classList.remove('hidden');
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Mengunduh...</span>';
-            this.classList.add('opacity-50', 'cursor-not-allowed');
+            btnDownload.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Mengunduh...</span>';
+            btnDownload.classList.add('opacity-50', 'cursor-not-allowed');
 
             try {
                 // 1. Fetch all URLs from API
@@ -298,44 +308,65 @@
                 const urls = data.urls;
                 const total = urls.length;
 
-                progressText.textContent = `Ditemukan ${total} halaman. Memulai download...`;
+                progressText.textContent = `Ditemukan ${total} halaman. Memeriksa cache...`;
+                progressBar.style.width = '10%';
 
-                // 2. Cache each URL
+                // 2. Smart Check & Download Loop (Frontend)
+                // Find active cache (starts with 'ayobuatbaik-')
+                const cacheNames = await caches.keys();
+                const activeCacheName = cacheNames.find(name => name.startsWith('ayobuatbaik-')) || 'ayobuatbaik-v2';
+                const cache = await caches.open(activeCacheName);
+                
                 let completed = 0;
                 let failed = 0;
+                let ignored = 0;
 
                 for (const url of urls) {
                     try {
-                        await fetch(url, { cache: 'reload' }); // Force fresh fetch
+                        // SMART CHECK: Is it already in cache?
+                        const cached = await cache.match(url);
+                        if (!cached) {
+                            // Missing -> FETCH IT
+                            const res = await fetch(url);
+                            if (res.ok) {
+                                await cache.put(url, res.clone());
+                            }
+                        } else {
+                            // Exists -> SKIP (Smart Update)
+                            ignored++;
+                        }
                         completed++;
                     } catch (e) {
                         failed++;
-                        console.warn('[Offline Download] Failed:', url);
+                        console.warn('Failed to fetch:', url);
                     }
 
-                    // Update progress
-                    const percent = Math.round((completed + failed) / total * 100);
-                    progressBar.style.width = percent + '%';
-                    progressText.textContent = `Mengunduh ${completed}/${total} halaman...`;
+                    // Update UI every 5 items or if slow
+                    if (completed % 5 === 0 || completed === total) {
+                        const percent = Math.round(completed / total * 100);
+                        progressBar.style.width = percent + '%';
+                        progressText.textContent = `Memproses ${completed}/${total} halaman...`;
+                    }
                 }
 
-                // 3. Done!
+                // 3. DONE
                 progressBar.style.width = '100%';
-                progressText.textContent = `Selesai! ${completed} halaman tersimpan untuk offline.`;
+                progressText.textContent = `Selesai! ${completed} halaman tersimpan.`;
                 
-                // Save to localStorage (with total count AND latest update for detection)
+                // Save to localStorage
                 localStorage.setItem('kitab_offline_data', JSON.stringify({
                     downloadedAt: Date.now(),
                     total: currentTotal,
                     latestUpdate: currentLatestUpdate
                 }));
 
-                // Update button
-                this.innerHTML = '<i class="fas fa-check-circle"></i> <span>Tersimpan!</span>';
-                this.classList.remove('opacity-50', 'bg-yellow-600/50', 'border-yellow-500/50');
-                this.classList.add('bg-green-600/50');
+                // Update Button State
+                btnDownload.innerHTML = '<i class="fas fa-check-circle"></i> <span>Tersimpan!</span>';
+                btnDownload.classList.remove('opacity-50', 'bg-yellow-600/50', 'border-yellow-500/50', 'cursor-not-allowed');
+                btnDownload.classList.add('bg-green-600/50');
+                btnDownload.disabled = false;
                 
-                // Hide update notification
+                // Hide update notifications
                 updateBadge.classList.add('hidden');
                 updateNotification.classList.add('hidden');
 
@@ -347,11 +378,16 @@
             } catch (error) {
                 console.error('[Offline Download] Error:', error);
                 progressText.textContent = 'Gagal mengunduh. Coba lagi nanti.';
-                this.disabled = false;
-                this.innerHTML = '<i class="fas fa-cloud-download-alt"></i> <span>Coba Lagi</span>';
-                this.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnDownload.disabled = false;
+                btnDownload.innerHTML = '<i class="fas fa-cloud-download-alt"></i> <span>Coba Lagi</span>';
+                btnDownload.classList.remove('opacity-50', 'cursor-not-allowed');
             }
-        });
+        }
+
+        // Attach to button click (Manual override)
+        btnDownload.addEventListener('click', startDownload);
+
+        // AUTO-TRIGGER REMOVED (Manual Mode Only)
     });
 </script>
 @endsection
