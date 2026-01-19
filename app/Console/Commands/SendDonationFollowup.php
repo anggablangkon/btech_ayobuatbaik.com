@@ -52,7 +52,8 @@ class SendDonationFollowup extends Command
             $this->newLine();
 
             foreach ($donors as $donor) {
-                $this->line("📱 {$donor->donor_phone} - {$donor->donor_name}");
+                $donorName = $donor->donor_name ?: 'Sahabat Baikku';
+                $this->line("📱 {$donor->donor_phone} - {$donorName}");
                 $this->line("   Donasi terakhir: {$donor->last_donation_at}");
                 $this->line("   Followup terakhir: " . ($donor->last_followup_at ?? 'Belum pernah'));
                 $this->newLine();
@@ -67,8 +68,9 @@ class SendDonationFollowup extends Command
 
         foreach ($donors as $donor) {
             $phone = preg_replace("/^0/", "62", $donor->donor_phone);
+            $donorName = $donor->donor_name ?: 'Sahabat Baikku';
 
-            $message = "Assalamu'alaikum {$donor->donor_name} 🙏
+            $message = "Assalamu'alaikum {$donorName} 🙏
 
 Terima kasih sudah pernah berdonasi di AyoBuatBaik.
 
