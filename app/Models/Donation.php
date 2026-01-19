@@ -23,6 +23,7 @@ class Donation extends Model
         "status",
         "status_change_at",
         "reminder_sent_at",
+        "followup_sent_at",
         "snap_token",
         "expires_at",
     ];
@@ -31,6 +32,7 @@ class Donation extends Model
         "amount" => "integer",
         "status_change_at" => "datetime",
         "reminder_sent_at" => "datetime",
+        "followup_sent_at" => "datetime",
         "expires_at" => "datetime",
         "created_at" => "datetime",
         "updated_at" => "datetime",
