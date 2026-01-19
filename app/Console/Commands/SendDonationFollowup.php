@@ -15,7 +15,7 @@ class SendDonationFollowup extends Command
 
     public function handle()
     {
-        $days = (int) env('DONATION_FOLLOWUP_DAYS', 10);
+        $days = (int) env('DONATION_FOLLOWUP_DAYS', 3);
         $now = now();
         $isDryRun = $this->option('dry-run');
 
@@ -23,20 +23,21 @@ class SendDonationFollowup extends Command
         // 1. Punya donasi success
         // 2. Donasi terakhir > X hari lalu
         // 3. Followup terakhir > X hari lalu (atau belum pernah)
-        $donors = Donation::select(
+        $cutoffDate = $now->copy()->subDays($days)->format('Y-m-d H:i:s');
+        
+        $donors = DB::table('donations')
+            ->select(
                 'donor_phone',
-                'donor_name',
+                DB::raw('MAX(donor_name) as donor_name'),
                 DB::raw('MAX(created_at) as last_donation_at'),
                 DB::raw('MAX(followup_sent_at) as last_followup_at')
             )
             ->where('status', 'success')
             ->whereNotNull('donor_phone')
-            ->groupBy('donor_phone', 'donor_name')
-            ->having('last_donation_at', '<', $now->copy()->subDays($days))
-            ->having(function ($query) use ($now, $days) {
-                $query->whereNull('last_followup_at')
-                      ->orHaving('last_followup_at', '<', $now->copy()->subDays($days));
-            })
+            ->whereNull('deleted_at')
+            ->groupBy('donor_phone')
+            ->havingRaw("MAX(created_at) < ?", [$cutoffDate])
+            ->havingRaw("(MAX(followup_sent_at) IS NULL OR MAX(followup_sent_at) < ?)", [$cutoffDate])
             ->get();
 
         if ($donors->isEmpty()) {
@@ -73,7 +74,7 @@ Terima kasih sudah pernah berdonasi di AyoBuatBaik.
 
 Sudah {$days} hari sejak donasi terakhir Anda. Yuk lanjutkan kebaikan! Setiap donasi sangat berarti bagi mereka yang membutuhkan.
 
-🔗 Donasi sekarang: https://ayobuatbaik.com/program-donasi
+🔗 Donasi sekarang: https://ayobuatbaik.com
 
 Jazakallah Khairan 🤲
 Tim AyoBuatBaik";
