@@ -16,6 +16,7 @@
 - **📚 Kitab & Hikmah**: Akses ke sumber literasi islami seperti Kitab Nashohul Ibad (dan fitur Al-Qur'an, Sholawat segera hadir).
 - **📱 PWA Support**: Dapat diinstal sebagai aplikasi di smartphone (Android/iOS) untuk akses lebih cepat.
 - **💳 Payment Gateway**: Integrasi pembayaran yang aman dan mudah (via Midtrans).
+- **📲 WA Followup Reminder**: Kirim reminder otomatis via WhatsApp ke donatur yang sudah X hari tidak donasi.
 - **🔍 Pencarian**: Fitur pencarian program donasi yang responsif.
 
 ## 🛠️ Teknologi yang Digunakan
