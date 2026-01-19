@@ -79,7 +79,7 @@ Sudah {$days} hari sejak donasi terakhir Anda. Yuk lanjutkan kebaikan! Setiap do
 🔗 Donasi sekarang: https://ayobuatbaik.com
 
 Jazakallah Khairan 🤲
-Tim AyoBuatBaik";
+Tim DKM MAsjid Salam Selfa";
 
             try {
                 Fonnte::send($phone, $message);
