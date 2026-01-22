@@ -70,6 +70,7 @@ Route::middleware(["auth"])
         Route::put("donasi/{id}", [AdminController::class, "updateManualDonasi"])->name("donasi.updateManual");
         Route::get("donasi/export", [AdminController::class, "exportDonasi"])->name("donasi.export");
         Route::get("/users", [AdminController::class, "users"])->name("users");
+        Route::post("/users/{user}/toggle-admin", [AdminController::class, "toggleAdmin"])->name("users.toggle-admin");
 
         // CRUD Program Donasi
         Route::resource("programs", ProgramDonasiController::class)->names("programs");

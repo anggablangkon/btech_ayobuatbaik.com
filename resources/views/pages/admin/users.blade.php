@@ -21,7 +21,9 @@
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b">No</th>
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b">Nama</th>
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b">Email</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b text-center">Peran</th>
                         <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b text-center">Tgl Bergabung</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider border-b text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -31,13 +33,37 @@
                                 {{ ($users->currentPage() - 1) * $users->perPage() + $index + 1 }}
                             </td>
                             <td class="px-6 py-4">
-                                <span class="font-medium text-gray-800 text-sm">{{ $user->name }}</span>
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-gray-800 text-sm">{{ $user->name }}</span>
+                                    @if($user->id === auth()->id())
+                                        <span class="text-[10px] text-primary-light font-medium">(Saya)</span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600">
                                 {{ $user->email }}
                             </td>
+                            <td class="px-6 py-4 text-center">
+                                @if($user->is_admin)
+                                    <span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">Admin</span>
+                                @else
+                                    <span class="bg-gray-100 text-gray-500 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">User</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-500 text-center">
                                 {{ $user->created_at->format('d M Y') }}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                @if($user->id !== auth()->id())
+                                    <form action="{{ route('admin.users.toggle-admin', $user) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin mengubah peran pengguna ini?')">
+                                        @csrf
+                                        <button type="submit" class="text-xs {{ $user->is_admin ? 'text-red-600 hover:text-red-800' : 'text-primary hover:text-primary-dark' }} font-bold transition-colors">
+                                            {{ $user->is_admin ? 'Jadikan User' : 'Jadikan Admin' }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-xs text-gray-400 italic">No Action</span>
+                                @endif
                             </td>
                         </tr>
                     @empty

@@ -302,4 +302,18 @@ class AdminController extends Controller
         $users = User::latest()->paginate(15);
         return view("pages.admin.users", compact("users"));
     }
+
+    public function toggleAdmin(User $user)
+    {
+        // Prevent self-demotion
+        if ($user->id === auth()->id()) {
+            return back()->with("error", "Anda tidak bisa mengubah peran Anda sendiri!");
+        }
+
+        $user->is_admin = !$user->is_admin;
+        $user->save();
+
+        $role = $user->is_admin ? "Admin" : "User";
+        return back()->with("success", "Peran {$user->name} berhasil diubah menjadi {$role}.");
+    }
 }
