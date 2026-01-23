@@ -4,8 +4,8 @@
 
 @section('og_title', 'Terjemah Kitab Nashaihul Ibad Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah . ' - ' . site_name())
 @section('og_description', Str::limit(strip_tags($maqolah->konten), 160))
-@section('og_url', route('home.kitab.maqolah', ['chapterSlug' => $chapter->slug, 'id' => $maqolah->id]))
-@section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')
+@section('og_url', url()->current())
+@section('og_image', asset(site_setting('site_logo', 'img/icon_ABBI.png')))
 
 @section('header-content')
     @include('components.layout.header')
@@ -137,7 +137,7 @@ function copyToClipboard() {
     // Ambil konten text only
     const title = "{{ $maqolah->judul }}";
     const content = `{{ strip_tags($maqolah->konten) }}`; 
-    const footer = "- Kitab Nashaihul Ibad, Ayobuatbaik.com";
+    const footer = "- Kitab Nashaihul Ibad, " + "{{ site_setting('site_url', 'https://ayobuatbaik.com') }}";
     
     const text = `${title}\n\n${content.trim()}\n\n${footer}`;
     

@@ -12,7 +12,7 @@
 
             {{-- Content --}}
             <div class="flex-1 min-w-0 pt-1">
-                <h3 class="text-sm font-black text-gray-900 leading-none mb-1 tracking-tight">Ayobuatbaik App</h3>
+                <h3 class="text-sm font-black text-gray-900 leading-none mb-1 tracking-tight">{{ site_name() }} App</h3>
                 <p id="pwa-desc" class="text-[11px] text-gray-500 font-medium leading-snug mb-3">
                     Nikmati pengalaman lebih cepat & lancar.
                 </p>

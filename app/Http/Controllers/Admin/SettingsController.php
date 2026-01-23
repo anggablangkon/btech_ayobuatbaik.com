@@ -45,7 +45,7 @@ class SettingsController extends Controller
         }
 
         // Update text settings
-        $textSettings = [
+        $textSettings = [   
             'site_name_highlight',
             'site_name_rest',
             'site_title',

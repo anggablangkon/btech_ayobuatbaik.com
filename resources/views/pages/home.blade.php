@@ -14,7 +14,7 @@
             <header class="mb-6">
                 <h2 id="featured-section" class="text-xl font-bold text-primary flex items-center gap-2">
                     <i class="fas fa-star text-secondary"></i>
-                    Ayo Berbuat Baik
+                    Program Pilihan 
                 </h2>
                 <div class="h-1 w-16 bg-secondary rounded-full mt-2"></div>
             </header>
@@ -83,7 +83,7 @@
     <section class="px-4 py-6 bg-white" id="kategori" aria-labelledby="category-section">
         <div class="max-w-7xl mx-auto">
             <header class="text-center mb-8">
-                <h2 id="category-section" class="text-xl font-bold text-primary mb-2">Kategori Program Ayobuatbaik</h2>
+            <h2 id="category-section" class="text-xl font-bold text-primary mb-2">Kategori Program </h2>
                 <p class="text-sm text-gray-600">Pilih kategori sesuai kebutuhan Anda</p>
             </header>
             <div class="grid grid-cols-4 gap-3 mt-6 text-center">

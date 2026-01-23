@@ -4,8 +4,8 @@
 
 @section('og_title', 'Nashaihul Ibad Bab ' . $chapter->nomor_bab . ($chapter->judul_bab ? ' : ' . $chapter->judul_bab : '') . ' - ' . site_name())
 @section('og_description', strip_tags($chapter->deskripsi))
-@section('og_url', route('home.kitab.chapter', $chapter->slug))
-@section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')
+@section('og_url', url()->current())
+@section('og_image', asset(site_setting('site_logo', 'img/icon_ABBI.png')))
 
 @section('header-content')
     @include('components.layout.header')

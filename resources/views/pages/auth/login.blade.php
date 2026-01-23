@@ -77,7 +77,7 @@
 
             {{-- Footer Text --}}
             <div class="text-center mt-6 text-xs text-gray-400">
-                &copy; {{ date('Y') }} Ayobuatbaik. All rights reserved.
+                &copy; {{ date('Y') }} {{ site_name() }}. All rights reserved.
             </div>
         </div>
     </div>
