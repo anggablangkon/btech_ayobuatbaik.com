@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kitab;
 use App\Models\KitabChapter;
 use App\Models\KitabMaqolah;
 use Illuminate\Http\Request;
@@ -10,36 +11,69 @@ use Illuminate\Support\Facades\Cache;
 class KitabController extends Controller
 {
     /**
-     * Menampilkan daftar bab kitab
+     * Menampilkan daftar semua kitab
      */
     public function index()
     {
-        $chapters = Cache::remember("kitab_chapters_list", 43200, function () {
-            return KitabChapter::with(['maqolahs' => function ($query) {
-                $query->select('id', 'chapter_id', 'nomor_maqolah', 'judul', 'urutan')->orderBy('urutan');
-            }])->withCount("maqolahs")->orderBy("urutan")->get();
+        $kitabs = Cache::remember("kitabs_list_v2", 43200, function () {
+            return Kitab::active()
+                ->withCount('chapters')
+                ->orderBy('urutan', 'asc')
+                ->orderBy('name', 'asc')
+                ->get();
         });
 
-        $maqolahs = Cache::remember("kitab_total_maqolah", 43200, function () {
-            return KitabMaqolah::count();
+        return view("pages.kitab.index", compact("kitabs"));
+    }
+
+    /**
+     * Menampilkan daftar bab dalam satu kitab
+     */
+    public function show($kitabSlug)
+    {
+        $kitab = Cache::remember("kitab_{$kitabSlug}", 43200, function () use ($kitabSlug) {
+            return Kitab::where('slug', $kitabSlug)
+                ->where('is_active', true)
+                ->firstOrFail();
+        });
+
+        $chapters = Cache::remember("kitab_{$kitabSlug}_chapters", 43200, function () use ($kitab) {
+            return KitabChapter::where('kitab_id', $kitab->id)
+                ->with(['maqolahs' => function ($query) {
+                    $query->select('id', 'chapter_id', 'nomor_maqolah', 'judul', 'urutan')->orderBy('urutan');
+                }])
+                ->withCount("maqolahs")
+                ->orderBy("urutan")
+                ->get();
+        });
+
+        $totalMaqolah = Cache::remember("kitab_{$kitabSlug}_total_maqolah", 43200, function () use ($kitab) {
+            return KitabMaqolah::whereHas('chapter', function ($q) use ($kitab) {
+                $q->where('kitab_id', $kitab->id);
+            })->count();
         });
 
         // Get latest update timestamp for offline sync detection
-        $latestUpdate = Cache::remember("kitab_latest_update", 43200, function () {
-            $latest = KitabMaqolah::max('updated_at');
+        $latestUpdate = Cache::remember("kitab_{$kitabSlug}_latest_update", 43200, function () use ($kitab) {
+            $latest = KitabMaqolah::whereHas('chapter', function ($q) use ($kitab) {
+                $q->where('kitab_id', $kitab->id);
+            })->max('updated_at');
             return $latest ? strtotime($latest) : 0;
         });
 
-        return view("pages.kitab.index", compact("chapters", "maqolahs", "latestUpdate"));
+        return view("pages.kitab.show", compact("kitab", "chapters", "totalMaqolah", "latestUpdate"));
     }
 
     /**
      * Menampilkan maqolah dalam satu bab
      */
-    public function showChapter($slug)
+    public function showChapter($kitabSlug, $chapterSlug)
     {
-        $chapter = Cache::remember("kitab_chapter_{$slug}", 43200, function () use ($slug) {
-            return KitabChapter::where("slug", $slug)
+        $kitab = Kitab::where('slug', $kitabSlug)->where('is_active', true)->firstOrFail();
+
+        $chapter = Cache::remember("kitab_chapter_{$chapterSlug}", 43200, function () use ($kitab, $chapterSlug) {
+            return KitabChapter::where("kitab_id", $kitab->id)
+                ->where("slug", $chapterSlug)
                 ->with([
                     "maqolahs" => function ($query) {
                         $query->orderBy("urutan");
@@ -48,17 +82,21 @@ class KitabController extends Controller
                 ->firstOrFail();
         });
 
-        return view("pages.kitab.chapter", compact("chapter"));
+        return view("pages.kitab.chapter", compact("kitab", "chapter"));
     }
 
     /**
      * Menampilkan detail maqolah tunggal
      */
-    public function showMaqolah($chapterSlug, $id)
+    public function showMaqolah($kitabSlug, $chapterSlug, $id)
     {
+        $kitab = Kitab::where('slug', $kitabSlug)->where('is_active', true)->firstOrFail();
+
         $cacheKey = "kitab_maqolah_{$id}";
-        $data = Cache::remember($cacheKey, 43200, function () use ($chapterSlug, $id) {
-            $chapter = KitabChapter::where("slug", $chapterSlug)->firstOrFail();
+        $data = Cache::remember($cacheKey, 43200, function () use ($kitab, $chapterSlug, $id) {
+            $chapter = KitabChapter::where("kitab_id", $kitab->id)
+                ->where("slug", $chapterSlug)
+                ->firstOrFail();
             $maqolah = KitabMaqolah::where("chapter_id", $chapter->id)->where("id", $id)->firstOrFail();
 
             // Get previous and next maqolah
@@ -68,17 +106,28 @@ class KitabController extends Controller
             return compact("chapter", "maqolah", "previous", "next");
         });
 
+        $data['kitab'] = $kitab;
+
         return view("pages.kitab.maqolah", $data);
     }
 
     /**
      * API: Mengembalikan semua URL Kitab untuk offline caching
      */
-    public function getAllUrls()
+    public function getAllUrls(Request $request)
     {
-        $urls = ['/kitab']; // Index page
+        $kitabSlug = $request->query('kitab');
 
-        $chapters = KitabChapter::with('maqolahs:id,chapter_id,nomor_maqolah,updated_at')
+        if (!$kitabSlug) {
+            return response()->json(['error' => 'kitab parameter required'], 400);
+        }
+
+        $kitab = Kitab::where('slug', $kitabSlug)->where('is_active', true)->firstOrFail();
+
+        $urls = ['/kitab', '/kitab/' . $kitab->slug];
+
+        $chapters = KitabChapter::where('kitab_id', $kitab->id)
+            ->with('maqolahs:id,chapter_id,nomor_maqolah,updated_at')
             ->orderBy('urutan')
             ->get();
 
@@ -87,12 +136,12 @@ class KitabController extends Controller
 
         foreach ($chapters as $chapter) {
             // Chapter URL
-            $urls[] = '/kitab/' . $chapter->slug;
+            $urls[] = '/kitab/' . $kitab->slug . '/' . $chapter->slug;
 
             // Maqolah URLs
             foreach ($chapter->maqolahs as $maqolah) {
-                $urls[] = '/kitab/' . $chapter->slug . '/maqolah/' . $maqolah->id;
-                
+                $urls[] = '/kitab/' . $kitab->slug . '/' . $chapter->slug . '/maqolah/' . $maqolah->id;
+
                 // Track latest updated_at
                 if (!$latestUpdate || $maqolah->updated_at > $latestUpdate) {
                     $latestUpdate = $maqolah->updated_at;
@@ -101,6 +150,7 @@ class KitabController extends Controller
         }
 
         return response()->json([
+            'kitab' => $kitab->name,
             'total' => count($urls),
             'urls' => $urls,
             'latest_update' => $latestUpdate ? $latestUpdate->timestamp : null

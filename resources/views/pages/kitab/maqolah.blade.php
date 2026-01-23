@@ -1,11 +1,11 @@
 @extends('components.layout.app')
 
-@section('title', 'Terjemah Kitab Nashaihul Ibad Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah . ' - ' . site_name())
+@section('title', 'Terjemah Kitab ' . $kitab->name . ' Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah . ' - ' . site_name())
 
-@section('og_title', 'Terjemah Kitab Nashaihul Ibad Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah . ' - ' . site_name())
+@section('og_title', 'Terjemah Kitab ' . $kitab->name . ' Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah . ' - ' . site_name())
 @section('og_description', Str::limit(strip_tags($maqolah->konten), 160))
 @section('og_url', url()->current())
-@section('og_image', asset(site_setting('site_logo', 'img/icon_ABBI.png')))
+@section('og_image', asset($kitab->cover_image ? 'storage/' . $kitab->cover_image : site_setting('site_logo', 'img/icon_ABBI.png')))
 
 @section('header-content')
     @include('components.layout.header')
@@ -22,7 +22,7 @@
 
             <div class="relative z-10 max-w-7xl mx-auto">
                 {{-- Back Button --}}
-                <a href="{{ route('home.kitab.chapter', $chapter->slug) }}" 
+                <a href="{{ route('home.kitab.chapter', [$kitab->slug, $chapter->slug]) }}" 
                     class="inline-flex items-center text-sm text-gray-300 hover:text-secondary mb-4 transition-colors font-medium">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Kembali ke Bab {{ $chapter->nomor_bab }}
@@ -40,7 +40,7 @@
                 </div>
 
                 <h1 class="text-xl font-bold leading-tight text-white/90">
-                    Terjemah Kitab Nashaihul Ibad {{ $maqolah->judul ?: 'Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah }}
+                    Terjemah Kitab {{ $kitab->name }} {{ $maqolah->judul ?: 'Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah }}
                 </h1>
             </div>
         </div>
@@ -61,7 +61,7 @@
                         <i class="fas fa-share-nodes text-secondary"></i> Bagikan Kebaikan
                     </h3>
                     <div class="flex gap-2">
-                        <a href="https://wa.me/?text={{ urlencode('*' . $maqolah->judul . "*\n\nBaca selengkapnya di: " . route('home.kitab.maqolah', ['chapterSlug' => $chapter->slug, 'id' => $maqolah->id])) }}" 
+                        <a href="https://wa.me/?text={{ urlencode('*' . $maqolah->judul . "*\n\nBaca selengkapnya di: " . route('home.kitab.maqolah', ['kitabSlug' => $kitab->slug, 'chapterSlug' => $chapter->slug, 'id' => $maqolah->id])) }}" 
                             target="_blank"
                             class="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white text-center py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm shadow-green-200"
                             onclick="fbq('track', 'Contact');">
@@ -83,13 +83,13 @@
                 {{-- Previous Button --}}
                 <div class="flex-1">
                     @if($previous)
-                        <a href="{{ route('home.kitab.maqolah', ['chapterSlug' => $chapter->slug, 'id' => $previous->id]) }}" 
+                        <a href="{{ route('home.kitab.maqolah', ['kitabSlug' => $kitab->slug, 'chapterSlug' => $chapter->slug, 'id' => $previous->id]) }}" 
                             class="w-full h-11 flex items-center justify-center gap-2 bg-gray-50 hover:bg-white hover:border-secondary/30 text-gray-600 hover:text-secondary rounded-xl text-xs font-bold transition-all border border-transparent group">
                             <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
                             <span>Sebelumnya</span>
                         </a>
                     @else
-                        <a href="{{ route('home.kitab.chapter', $chapter->slug) }}" 
+                        <a href="{{ route('home.kitab.chapter', [$kitab->slug, $chapter->slug]) }}" 
                             class="w-full h-11 flex items-center justify-center gap-2 bg-gray-50 text-gray-400 rounded-xl text-xs font-bold transition-all border border-transparent">
                             <i class="fas fa-list"></i>
                             <span>Daftar BAB {{ $chapter->nomor_bab }}</span>
@@ -106,13 +106,13 @@
                 {{-- Next Button --}}
                 <div class="flex-1">
                     @if($next)
-                        <a href="{{ route('home.kitab.maqolah', ['chapterSlug' => $chapter->slug, 'id' => $next->id]) }}" 
+                        <a href="{{ route('home.kitab.maqolah', ['kitabSlug' => $kitab->slug, 'chapterSlug' => $chapter->slug, 'id' => $next->id]) }}" 
                             class="w-full h-11 flex items-center justify-center gap-2 bg-secondary text-white hover:bg-yellow-600 rounded-xl text-xs font-bold transition-all shadow-lg shadow-orange-200 group">
                             <span>Selanjutnya</span>
                             <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                         </a>
                     @else
-                        <a href="{{ route('home.kitab.chapter', $chapter->slug) }}" 
+                        <a href="{{ route('home.kitab.chapter', [$kitab->slug, $chapter->slug]) }}" 
                             class="w-full h-11 flex items-center justify-center gap-2 bg-gray-800 text-white hover:bg-gray-700 rounded-xl text-xs font-bold transition-all shadow-lg group">
                             <span>Daftar BAB {{ $chapter->nomor_bab }}</span>
                             <i class="fas fa-list group-hover:scale-110 transition-transform"></i>
@@ -129,6 +129,7 @@
 <script>
 // Event Tracking Jamaah Kajian
 fbq('track', 'JamaahKajian', {
+    kitab: '{{ $kitab->name }}',
     chapter: 'Bab {{ $chapter->nomor_bab }}',
     maqolah: '{{ $maqolah->judul ?: "Maqolah " . $maqolah->nomor_maqolah }}'
 });
@@ -137,7 +138,7 @@ function copyToClipboard() {
     // Ambil konten text only
     const title = "{{ $maqolah->judul }}";
     const content = `{{ strip_tags($maqolah->konten) }}`; 
-    const footer = "- Kitab Nashaihul Ibad, " + "{{ site_setting('site_url', 'https://ayobuatbaik.com') }}";
+    const footer = "- Kitab {{ $kitab->name }}, " + "{{ site_setting('site_url', url('/')) }}";
     
     const text = `${title}\n\n${content.trim()}\n\n${footer}`;
     

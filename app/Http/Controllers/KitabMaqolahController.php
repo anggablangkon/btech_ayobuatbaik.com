@@ -15,7 +15,7 @@ class KitabMaqolahController extends Controller
      */
     public function index(Request $request)
     {
-        $chapters = KitabChapter::orderBy("nomor_bab")->get();
+        $chapters = KitabChapter::with('kitab')->orderBy('kitab_id')->orderBy("nomor_bab")->get();
         $search = $request->search;
 
         if (!$request->has('chapter') && !$search) {
@@ -78,7 +78,7 @@ class KitabMaqolahController extends Controller
      */
     public function create(Request $request)
     {
-        $chapters = KitabChapter::orderBy("nomor_bab")->get();
+        $chapters = KitabChapter::with('kitab')->orderBy('kitab_id')->orderBy("nomor_bab")->get();
         $selectedChapterId = $request->chapter;
 
         // Get next nomor_maqolah for selected chapter
@@ -133,7 +133,7 @@ class KitabMaqolahController extends Controller
      */
     public function edit(KitabMaqolah $kitabMaqolah)
     {
-        $chapters = KitabChapter::orderBy("nomor_bab")->get();
+        $chapters = KitabChapter::with('kitab')->orderBy('kitab_id')->orderBy("nomor_bab")->get();
 
         return view("pages.admin.kitab-maqolah.edit", compact("kitabMaqolah", "chapters"));
     }

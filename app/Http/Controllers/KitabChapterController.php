@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kitab;
 use App\Models\KitabChapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -15,11 +16,16 @@ class KitabChapterController extends Controller
      */
     public function index(Request $request)
     {
-        $query = KitabChapter::withCount("maqolahs");
+        $query = KitabChapter::with('kitab')->withCount("maqolahs");
 
         // Search
         if ($request->search) {
             $query->where("judul_bab", "like", "%" . $request->search . "%");
+        }
+
+        // Filter by kitab
+        if ($request->kitab_id) {
+            $query->where('kitab_id', $request->kitab_id);
         }
 
         // Sort
@@ -28,19 +34,28 @@ class KitabChapterController extends Controller
         $query->orderBy($sortField, $sortDirection);
 
         $chapters = $query->paginate($request->get("perPage", 10));
+        $kitabs = Kitab::orderBy('name')->get();
 
-        return view("pages.admin.kitab-chapter.index", compact("chapters"));
+        return view("pages.admin.kitab-chapter.index", compact("chapters", "kitabs"));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        $lastChapter = KitabChapter::orderBy("nomor_bab", "desc")->first();
+        $selectedKitabId = $request->get('kitab_id');
+        
+        $query = KitabChapter::query();
+        if ($selectedKitabId) {
+            $query->where('kitab_id', $selectedKitabId);
+        }
+        
+        $lastChapter = $query->orderBy("nomor_bab", "desc")->first();
         $nextNomor = $lastChapter ? $lastChapter->nomor_bab + 1 : 1;
+        $kitabs = Kitab::orderBy('name')->get();
 
-        return view("pages.admin.kitab-chapter.create", compact("nextNomor"));
+        return view("pages.admin.kitab-chapter.create", compact("nextNomor", "kitabs", "selectedKitabId"));
     }
 
     /**
@@ -49,7 +64,8 @@ class KitabChapterController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            "nomor_bab" => "required|integer|unique:kitab_chapters,nomor_bab",
+            "kitab_id" => "required|exists:kitabs,id",
+            "nomor_bab" => "required|integer",
             "judul_bab" => "nullable|string|max:255",
             "deskripsi" => "nullable|string",
         ]);
@@ -61,8 +77,7 @@ class KitabChapterController extends Controller
         KitabChapter::create($validated);
 
         // Hapus cache kitab
-        Cache::forget('kitab_chapters_list');
-        Cache::forget('kitab_total_maqolah');
+        $this->clearChapterCache($validated['kitab_id']);
 
         return redirect()->route("admin.kitab_chapter.index")->with("success", "Bab berhasil ditambahkan.");
     }
@@ -80,7 +95,8 @@ class KitabChapterController extends Controller
      */
     public function edit(KitabChapter $kitabChapter)
     {
-        return view("pages.admin.kitab-chapter.edit", compact("kitabChapter"));
+        $kitabs = Kitab::orderBy('name')->get();
+        return view("pages.admin.kitab-chapter.edit", compact("kitabChapter", "kitabs"));
     }
 
     /**
@@ -89,7 +105,8 @@ class KitabChapterController extends Controller
     public function update(Request $request, KitabChapter $kitabChapter)
     {
         $validated = $request->validate([
-            "nomor_bab" => "required|integer|unique:kitab_chapters,nomor_bab," . $kitabChapter->id,
+            "kitab_id" => "required|exists:kitabs,id",
+            "nomor_bab" => "required|integer",
             "judul_bab" => "nullable|string|max:255",
             "deskripsi" => "nullable|string",
         ]);
@@ -102,7 +119,7 @@ class KitabChapterController extends Controller
         $kitabChapter->update($validated);
 
         // Hapus cache kitab
-        Cache::forget('kitab_chapters_list');
+        $this->clearChapterCache($validated['kitab_id']);
         Cache::forget("kitab_chapter_{$oldSlug}");
         if ($oldSlug !== $kitabChapter->slug) {
             Cache::forget("kitab_chapter_{$kitabChapter->slug}");
@@ -116,15 +133,29 @@ class KitabChapterController extends Controller
      */
     public function destroy(KitabChapter $kitabChapter)
     {
-        // Maqolahs akan otomatis terhapus karena cascade
+        $kitabId = $kitabChapter->kitab_id;
         $chapterSlug = $kitabChapter->slug;
         $kitabChapter->delete();
 
         // Hapus cache kitab
-        Cache::forget('kitab_chapters_list');
-        Cache::forget('kitab_total_maqolah');
+        $this->clearChapterCache($kitabId);
         Cache::forget("kitab_chapter_{$chapterSlug}");
 
         return redirect()->route("admin.kitab_chapter.index")->with("success", "Bab berhasil dihapus.");
+    }
+
+    /**
+     * Clear chapter related cache.
+     */
+    private function clearChapterCache($kitabId)
+    {
+        $kitab = Kitab::find($kitabId);
+        if ($kitab) {
+            Cache::forget("kitab_{$kitab->slug}");
+            Cache::forget("kitab_{$kitab->slug}_chapters");
+            Cache::forget("kitab_{$kitab->slug}_total_maqolah");
+            Cache::forget("kitab_{$kitab->slug}_latest_update");
+        }
+        Cache::forget('kitabs_list');
     }
 }

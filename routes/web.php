@@ -18,6 +18,7 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\KitabController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\KitabController as AdminKitabController;
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
@@ -28,11 +29,12 @@ Route::get('/offline', function () {
 
 Route::get("/", [HomeController::class, "index"])->name("home");
 
-// Kitab Nashaihul Ibad
+// Kitab - Multi Kitab Support
 Route::get("/kitab", [KitabController::class, "index"])->name("home.kitab.index");
 Route::get("/kitab/api/urls", [KitabController::class, "getAllUrls"])->name("home.kitab.urls"); // API for offline download
-Route::get("/kitab/{slug}", [KitabController::class, "showChapter"])->name("home.kitab.chapter");
-Route::get("/kitab/{chapterSlug}/maqolah/{id}", [KitabController::class, "showMaqolah"])->name("home.kitab.maqolah");
+Route::get("/kitab/{kitabSlug}", [KitabController::class, "show"])->name("home.kitab.show");
+Route::get("/kitab/{kitabSlug}/{chapterSlug}", [KitabController::class, "showChapter"])->name("home.kitab.chapter");
+Route::get("/kitab/{kitabSlug}/{chapterSlug}/maqolah/{id}", [KitabController::class, "showMaqolah"])->name("home.kitab.maqolah");
     
 Route::get("/programs", [HomeController::class, "programs"])->name("home.program");
 Route::get("/program/{slug}", [HomeController::class, "program"])->name("home.program.show");
@@ -86,6 +88,7 @@ Route::middleware(["auth"])
             ->names("berita");
         Route::post("/sliders/reorder", [SliderController::class, "reorder"])->name("sliders.reorder");
 
+        Route::resource("kitab", AdminKitabController::class)->names("kitab");
         Route::resource("kitab-chapter", KitabChapterController::class)->names("kitab_chapter");
         Route::resource("kitab-maqolah", KitabMaqolahController::class)->names("kitab_maqolah");
 

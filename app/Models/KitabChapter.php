@@ -11,7 +11,15 @@ class KitabChapter extends Model
 
     protected $table = "kitab_chapters";
 
-    protected $fillable = ["nomor_bab", "judul_bab", "deskripsi", "slug", "urutan"];
+    protected $fillable = ["kitab_id", "nomor_bab", "judul_bab", "deskripsi", "slug", "urutan"];
+
+    /**
+     * Relasi ke kitab parent
+     */
+    public function kitab()
+    {
+        return $this->belongsTo(Kitab::class, 'kitab_id');
+    }
 
     /**
      * Relasi ke maqolah-maqolah dalam bab ini

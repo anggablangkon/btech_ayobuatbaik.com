@@ -11,8 +11,10 @@
         <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <h3 class="text-base font-semibold text-gray-900">Daftar Bab Kitab</h3>
-                    <a href="{{ route('admin.kitab_chapter.create') }}"
+                    <h3 class="text-base font-semibold text-gray-900">
+                        {{ request('kitab_id') ? 'Daftar Bab: ' . $kitabs->find(request('kitab_id'))->name : 'Daftar Bab Semua Kitab' }}
+                    </h3>
+                    <a href="{{ route('admin.kitab_chapter.create', ['kitab_id' => request('kitab_id')]) }}"
                         class="ml-2 inline-flex items-center gap-2 bg-primary text-white px-3 py-2 rounded-lg hover:bg-gray-700 transition">
                         <i class="fas fa-plus"></i> <span>Tambah Bab</span>
                     </a>
@@ -20,6 +22,15 @@
 
                 <!-- Filter Form -->
                 <form id="controlsForm" method="GET" class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                    <select name="kitab_id" id="kitab_id" class="border rounded px-3 py-2">
+                        <option value="">Semua Kitab</option>
+                        @foreach($kitabs as $kitab)
+                            <option value="{{ $kitab->id }}" {{ request('kitab_id') == $kitab->id ? 'selected' : '' }}>
+                                {{ $kitab->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
                     <input type="text" name="search" placeholder="Cari judul bab..." value="{{ request('search') }}"
                         class="w-full sm:w-64 border px-3 py-2 rounded-md focus:outline-none focus:ring-1 focus:ring-primary" />
 
@@ -53,6 +64,9 @@
                         <thead class="text-gray-600 bg-gray-50">
                             <tr>
                                 <th class="px-4 py-3 text-left w-16">No</th>
+                                @if(!request('kitab_id'))
+                                <th class="px-4 py-3 text-left">Kitab</th>
+                                @endif
                                 <th class="px-4 py-3 text-left">Judul Bab</th>
                                 <th class="px-4 py-3 text-left">Deskripsi</th>
                                 <th class="px-4 py-3 text-center">Maqolah</th>
@@ -63,8 +77,13 @@
                             @forelse($chapters as $chapter)
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-4 py-3 font-semibold text-primary">{{ $chapter->nomor_bab }}</td>
+                                    @if(!request('kitab_id'))
                                     <td class="px-4 py-3">
-                                        <div class="font-semibold">Nashaihul Ibad Bab {{ $chapter->nomor_bab }}{{ $chapter->judul_bab ? ' : ' . $chapter->judul_bab : '' }}</div>
+                                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">{{ $chapter->kitab->name ?? '-' }}</span>
+                                    </td>
+                                    @endif
+                                    <td class="px-4 py-3">
+                                        <div class="font-semibold">{{ $chapter->kitab->name ?? 'Kitab' }} Bab {{ $chapter->nomor_bab }}{{ $chapter->judul_bab ? ' : ' . $chapter->judul_bab : '' }}</div>
                                     </td>
                                     <td class="px-4 py-3 text-gray-600">
                                         {{ Str::limit(strip_tags($chapter->deskripsi), 60) }}
@@ -77,21 +96,32 @@
                                         </a>
                                     </td>
                                     <td class="px-4 py-3 text-right">
-                                        <a href="{{ route('admin.kitab_chapter.edit', $chapter->id) }}"
-                                            class="text-blue-600 hover:text-blue-800 mr-3"><i class="fas fa-edit"></i></a>
-                                        <form id="delete-form-{{ $chapter->id }}" action="{{ route('admin.kitab_chapter.destroy', $chapter->id) }}" method="POST"
-                                            class="inline">
-                                            @csrf @method('DELETE')
-                                            <button type="button" onclick="confirmDelete('delete-form-{{ $chapter->id }}', 'Hapus bab ini? Semua maqolah di dalamnya juga akan terhapus.')" 
-                                                class="text-red-600 hover:text-red-800">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        <div class="flex items-center justify-end gap-2">
+                                            <a href="{{ route('admin.kitab_maqolah.index', ['chapter' => $chapter->id]) }}" 
+                                               class="bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded-lg transition-colors"
+                                               title="Kelola Maqolah">
+                                                <i class="fas fa-list-ul"></i>
+                                            </a>
+                                            <a href="{{ route('admin.kitab_chapter.edit', $chapter->id) }}"
+                                                class="bg-yellow-100 hover:bg-yellow-200 text-yellow-600 p-2 rounded-lg transition-colors"
+                                                title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form id="delete-form-{{ $chapter->id }}" action="{{ route('admin.kitab_chapter.destroy', $chapter->id) }}" method="POST"
+                                                class="inline">
+                                                @csrf @method('DELETE')
+                                                <button type="button" onclick="confirmDelete('delete-form-{{ $chapter->id }}', 'Hapus bab ini? Semua maqolah di dalamnya juga akan terhapus.')" 
+                                                    class="bg-red-100 hover:bg-red-200 text-red-600 p-2 rounded-lg transition-colors"
+                                                    title="Hapus">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-6 text-gray-500">Belum ada bab.</td>
+                                    <td colspan="6" class="text-center py-6 text-gray-500">Belum ada bab.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -112,7 +142,8 @@
                                 <span class="text-primary font-bold">{{ $chapter->nomor_bab }}</span>
                             </div>
                             <div class="flex-1">
-                                <div class="font-semibold text-sm">Nashaihul Ibad Bab {{ $chapter->nomor_bab }}{{ $chapter->judul_bab ? ' : ' . $chapter->judul_bab : '' }}</div>
+                                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{{ $chapter->kitab->name ?? '-' }}</span>
+                                <div class="font-semibold text-sm">{{ $chapter->kitab->name ?? 'Kitab' }} Bab {{ $chapter->nomor_bab }}{{ $chapter->judul_bab ? ' : ' . $chapter->judul_bab : '' }}</div>
                                 <div class="text-xs text-gray-500 mt-1">{{ Str::limit($chapter->deskripsi, 50) }}</div>
                                 <div class="flex items-center justify-between mt-3">
                                     <a href="{{ route('admin.kitab_maqolah.index', ['chapter' => $chapter->id]) }}"
@@ -148,7 +179,7 @@
     @section('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                ['perPage'].forEach(id => {
+                ['kitab_id', 'perPage'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el) el.addEventListener('change', () => document.getElementById('controlsForm').submit());
                 });

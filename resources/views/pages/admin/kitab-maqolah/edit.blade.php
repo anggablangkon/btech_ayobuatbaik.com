@@ -32,7 +32,7 @@
                         <option value="">Pilih Bab</option>
                         @foreach($chapters as $ch)
                             <option value="{{ $ch->id }}" {{ old('chapter_id', $kitabMaqolah->chapter_id) == $ch->id ? 'selected' : '' }}>
-                                Bab {{ $ch->nomor_bab }} - {{ $ch->judul_bab }}
+                                {{ $ch->kitab->name ?? 'Kitab' }} - Bab {{ $ch->nomor_bab }} - {{ $ch->judul_bab }}
                             </option>
                         @endforeach
                     </select>

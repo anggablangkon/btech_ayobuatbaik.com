@@ -1,11 +1,11 @@
 @extends('components.layout.app')
 
-@section('title', 'Nashaihul Ibad Bab ' . $chapter->nomor_bab . ($chapter->judul_bab ? ' : ' . $chapter->judul_bab : '') . ' - ' . site_name())
+@section('title', $kitab->name . ' Bab ' . $chapter->nomor_bab . ($chapter->judul_bab ? ' : ' . $chapter->judul_bab : '') . ' - ' . site_name())
 
-@section('og_title', 'Nashaihul Ibad Bab ' . $chapter->nomor_bab . ($chapter->judul_bab ? ' : ' . $chapter->judul_bab : '') . ' - ' . site_name())
+@section('og_title', $kitab->name . ' Bab ' . $chapter->nomor_bab . ($chapter->judul_bab ? ' : ' . $chapter->judul_bab : '') . ' - ' . site_name())
 @section('og_description', strip_tags($chapter->deskripsi))
 @section('og_url', url()->current())
-@section('og_image', asset(site_setting('site_logo', 'img/icon_ABBI.png')))
+@section('og_image', asset($kitab->cover_image ? 'storage/' . $kitab->cover_image : site_setting('site_logo', 'img/icon_ABBI.png')))
 
 @section('header-content')
     @include('components.layout.header')
@@ -23,10 +23,10 @@
             <div class="relative z-10 max-w-7xl mx-auto">
                 <div class="flex justify-between items-center mb-6 gap-4">
                     {{-- Back Button --}}
-                    <a href="{{ route('home.kitab.index') }}" 
+                    <a href="{{ route('home.kitab.show', $kitab->slug) }}" 
                         class="inline-flex items-center text-sm text-gray-300 hover:text-secondary transition-colors font-medium">
                         <i class="fas fa-arrow-left mr-2"></i>
-                        Kembali
+                        Kembali ke {{ $kitab->name }}
                     </a>
 
                     {{-- Pencarian maqolah cepat --}}
@@ -53,7 +53,7 @@
                             <span class="inline-block px-2 py-0.5 rounded-md bg-secondary/20 text-secondary text-[10px] font-bold tracking-wider mb-2 border border-secondary/20">
                                 BAB {{ $chapter->nomor_bab }}
                             </span>
-                            <h1 class="text-xl font-bold leading-tight mb-2">Nashaihul Ibad Bab {{ $chapter->nomor_bab }}{{ $chapter->judul_bab ? ' : ' . $chapter->judul_bab : '' }}</h1>
+                            <h1 class="text-xl font-bold leading-tight mb-2">{{ $kitab->name }} Bab {{ $chapter->nomor_bab }}{{ $chapter->judul_bab ? ' : ' . $chapter->judul_bab : '' }}</h1>
                             <div class="flex items-center text-xs text-gray-400 font-medium">
                                 <i class="fas fa-scroll text-secondary mr-2"></i>
                                 <span>{{ $chapter->maqolahs->count() }} Maqolah dalam bab ini</span>
@@ -89,7 +89,7 @@
                 </div>
                 
                 @forelse ($chapter->maqolahs as $index => $maqolah)
-                    <a href="{{ route('home.kitab.maqolah', ['chapterSlug' => $chapter->slug, 'id' => $maqolah->id]) }}"
+                    <a href="{{ route('home.kitab.maqolah', ['kitabSlug' => $kitab->slug, 'chapterSlug' => $chapter->slug, 'id' => $maqolah->id]) }}"
                         data-nomor="{{ $maqolah->nomor_maqolah }}"
                         class="maqolah-card block bg-white rounded-xl shadow-sm border border-gray-100 hover:border-secondary hover:shadow-md transition-all duration-300 overflow-hidden group">
                         <div class="p-4">
@@ -102,7 +102,7 @@
                                 {{-- Content --}}
                                 <div class="flex-1 min-w-0 pt-1">
                                     <h3 class="font-bold text-gray-800 text-sm group-hover:text-secondary transition-colors mb-1 line-clamp-2">
-                                        Terjemah Kitab Nashaihul Ibad {{ $maqolah->judul ?: 'Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah }}
+                                        Terjemah Kitab {{ $kitab->name }} {{ $maqolah->judul ?: 'Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah }}
                                     </h3>
                                     <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed font-light">
                                         {{ Str::limit(html_entity_decode(strip_tags($maqolah->konten)), 120) }}

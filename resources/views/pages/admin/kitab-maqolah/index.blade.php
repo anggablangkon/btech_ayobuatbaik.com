@@ -25,11 +25,11 @@
 
                 <!-- Filter Form -->
                 <form id="controlsForm" method="GET" class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-                    <select name="chapter" id="chapter" class="border rounded px-3 py-2">
+                    <select name="chapter" id="chapter" class="border rounded px-3 py-2 max-w-xs">
                         <option value="">Semua Bab</option>
                         @foreach($chapters as $ch)
                             <option value="{{ $ch->id }}" {{ request('chapter') == $ch->id ? 'selected' : '' }}>
-                                Bab {{ $ch->nomor_bab }} @if($ch->judul_bab) - {{ Str::limit($ch->judul_bab, 25) }} @endif
+                                {{ $ch->kitab->name ?? 'Kitab' }} - Bab {{ $ch->nomor_bab }} @if($ch->judul_bab) : {{ Str::limit($ch->judul_bab, 20) }} @endif
                             </option>
                         @endforeach
                     </select>
@@ -80,8 +80,8 @@
                                 </div>
                             </div>
 
-                            {{-- Maqolah Table for this Chapter --}}
-                            <div class="overflow-x-auto">
+                            {{-- Maqolah Table for this Chapter (DESKTOP) --}}
+                            <div class="hidden md:block overflow-x-auto">
                                 <table class="min-w-full text-sm">
                                     <thead class="text-gray-400 bg-white">
                                         <tr>
@@ -138,6 +138,51 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            {{-- Maqolah Cards (MOBILE) --}}
+                            <div class="md:hidden divide-y divide-gray-100">
+                                @forelse($chapter->maqolahs as $maq)
+                                    <div class="p-4 hover:bg-gray-50 transition-colors">
+                                        <div class="flex justify-between items-start gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-primary font-bold text-sm">
+                                                {{ $maq->nomor_maqolah }}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <h5 class="font-semibold text-gray-900 text-sm mb-1">{{ $maq->judul }}</h5>
+                                                <p class="text-xs text-gray-500 line-clamp-2">
+                                                    {{ Str::limit(html_entity_decode(strip_tags($maq->konten)), 80) }}
+                                                </p>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <a href="{{ route('admin.kitab_maqolah.edit', $maq->id) }}"
+                                                    class="p-2 text-gray-400 hover:text-blue-600 transition-colors">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form id="delete-form-mobile-{{ $maq->id }}" 
+                                                    action="{{ route('admin.kitab_maqolah.destroy', $maq->id) }}" 
+                                                    method="POST" class="inline">
+                                                    @csrf @method('DELETE')
+                                                    <button type="button" onclick="confirmDelete('delete-form-mobile-{{ $maq->id }}')" 
+                                                        class="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="p-6 text-center">
+                                        <div class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mx-auto mb-2">
+                                            <i class="fas fa-folder-open"></i>
+                                        </div>
+                                        <p class="text-xs text-gray-400">Belum ada maqolah.</p>
+                                        <a href="{{ route('admin.kitab_maqolah.create', ['chapter' => $chapter->id]) }}" 
+                                            class="text-xs text-primary font-bold hover:underline block mt-1">
+                                            + Tambah
+                                        </a>
+                                    </div>
+                                @endforelse
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -148,7 +193,8 @@
             @else
                 {{-- FLAT VIEW: Search Results or Filtered Chapter --}}
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="overflow-x-auto">
+                    {{-- Desktop Table --}}
+                    <div class="hidden md:block overflow-x-auto">
                         <table class="min-w-full text-sm">
                             <thead class="text-gray-400 bg-gray-50/50">
                                 <tr>
@@ -178,11 +224,11 @@
                                             <div class="flex items-center justify-end gap-3">
                                                 <a href="{{ route('admin.kitab_maqolah.edit', $maqolah->id) }}"
                                                     class="text-gray-400 hover:text-blue-600"><i class="fas fa-edit"></i></a>
-                                                <form id="delete-form-{{ $maqolah->id }}" 
+                                                <form id="delete-form-flat-{{ $maqolah->id }}" 
                                                     action="{{ route('admin.kitab_maqolah.destroy', $maqolah->id) }}" 
                                                     method="POST" class="inline">
                                                     @csrf @method('DELETE')
-                                                    <button type="button" onclick="confirmDelete('delete-form-{{ $maqolah->id }}')" 
+                                                    <button type="button" onclick="confirmDelete('delete-form-flat-{{ $maqolah->id }}')" 
                                                         class="text-gray-400 hover:text-red-500">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
@@ -200,6 +246,46 @@
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+
+                    {{-- Mobile Cards (Flat View) --}}
+                    <div class="md:hidden divide-y divide-gray-100">
+                        @forelse($maqolahs as $maqolah)
+                            <div class="p-4 hover:bg-gray-50 transition-colors">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded font-bold uppercase">
+                                        Bab {{ $maqolah->chapter->nomor_bab }}
+                                    </span>
+                                    <span class="text-primary font-bold text-xs">#{{ $maqolah->nomor_maqolah }}</span>
+                                </div>
+                                
+                                <h5 class="font-semibold text-gray-900 text-sm mb-1">{{ $maqolah->judul }}</h5>
+                                <p class="text-xs text-gray-500 line-clamp-2 mb-3">
+                                    {{ Str::limit(html_entity_decode(strip_tags($maqolah->konten)), 80) }}
+                                </p>
+
+                                <div class="flex justify-end gap-3 border-t border-gray-50 pt-2">
+                                    <a href="{{ route('admin.kitab_maqolah.edit', $maqolah->id) }}"
+                                        class="text-xs text-blue-600 font-medium">
+                                        <i class="fas fa-edit mr-1"></i> Edit
+                                    </a>
+                                    <form id="delete-form-flat-mobile-{{ $maqolah->id }}" 
+                                        action="{{ route('admin.kitab_maqolah.destroy', $maqolah->id) }}" 
+                                        method="POST" class="inline">
+                                        @csrf @method('DELETE')
+                                        <button type="button" onclick="confirmDelete('delete-form-flat-mobile-{{ $maqolah->id }}')" 
+                                            class="text-xs text-red-600 font-medium">
+                                            <i class="fas fa-trash mr-1"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-10 text-gray-400">
+                                <i class="fas fa-search mb-2 text-2xl block"></i>
+                                Tidak ditemukan maqolah yang sesuai.
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 

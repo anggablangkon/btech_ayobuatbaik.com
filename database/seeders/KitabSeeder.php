@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Kitab;
 use App\Models\KitabChapter;
 use App\Models\KitabMaqolah;
 use Illuminate\Database\Seeder;
@@ -14,6 +15,18 @@ class KitabSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create or get the default Kitab
+        $kitab = Kitab::firstOrCreate(
+            ['slug' => 'nashaihul-ibad'],
+            [
+                'name' => 'Nashaihul Ibad',
+                'author' => 'Syekh Nawawi Al-Bantani',
+                'description' => 'Kitab Nashaihul Ibad merupakan karya Syekh Nawawi al-Bantani yang berisi kumpulan nasihat-nasihat berharga untuk umat Islam.',
+                'is_active' => true,
+                'urutan' => 1,
+            ]
+        );
+
         // Data 10 Bab Kitab Nashaihul Ibad
         $chapters = [
             [
@@ -233,6 +246,7 @@ class KitabSeeder extends Seeder
 
         foreach ($chapters as $chapterIndex => $chapterData) {
             $chapter = KitabChapter::create([
+                "kitab_id" => $kitab->id, // Assign to kitab
                 "nomor_bab" => $chapterData["nomor_bab"],
                 "judul_bab" => $chapterData["judul_bab"],
                 "deskripsi" => $chapterData["deskripsi"],
@@ -250,5 +264,10 @@ class KitabSeeder extends Seeder
                 ]);
             }
         }
+
+        // Also assign any existing chapters without kitab_id to this kitab
+        KitabChapter::whereNull('kitab_id')->update(['kitab_id' => $kitab->id]);
+
+        $this->command->info("Kitab 'Nashaihul Ibad' seeded successfully!");
     }
 }

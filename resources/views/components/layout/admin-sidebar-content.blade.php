@@ -30,17 +30,13 @@
             <span>Program Donasi</span>
         </a>
 
-        <a href="{{ route('admin.kitab_chapter.index') }}"
-            class="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-gray-800 transition-colors {{ request()->routeIs('admin.kitab_chapter.*') ? 'bg-gray-800' : '' }}">
-            <i class="fas fa-book w-5"></i>
-            <span>Kitab Bab</span>
+        <a href="{{ route('admin.kitab.index') }}"
+            class="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-gray-800 transition-colors {{ request()->routeIs('admin.kitab.*') ? 'bg-gray-800' : '' }}">
+            <i class="fas fa-book-quran w-5"></i>
+            <span>Kelola Kitab</span>
         </a>
 
-        <a href="{{ route('admin.kitab_maqolah.index') }}"
-            class="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-gray-800 transition-colors {{ request()->routeIs('admin.kitab_maqolah.*') ? 'bg-gray-800' : '' }}">
-            <i class="fas fa-book w-5"></i>
-            <span>Kitab Maqolah</span>
-        </a>
+
 
         <a href="{{ route('admin.donasi.index') }}"
             class="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-gray-800 transition-colors {{ request()->routeIs('admin.donasi.*') ? 'bg-gray-800' : '' }}">
