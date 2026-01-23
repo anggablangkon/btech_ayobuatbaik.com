@@ -1,7 +1,7 @@
 @extends('components.layout.app')
 
-@section('title', 'Profil Saya - Ayobuatbaik')
-@section('og_title', 'Profil Saya - Ayobuatbaik')
+@section('title', 'Profil Saya - ' . site_name())
+@section('og_title', 'Profil Saya - ' . site_name())
 
 @section('content')
     {{-- Main Container --}}

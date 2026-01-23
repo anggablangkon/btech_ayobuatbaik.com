@@ -4,8 +4,8 @@
 
 @section('og_title', 'Status Donasi - ' . $donation->program->title)
 @section('og_description', 'Status Donasi - ' . $donation->program->title)
-@section('og_url', 'https://ayobuatbaik.com')
-@section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')
+@section('og_url', url()->current())
+@section('og_image', asset(site_setting('site_logo', 'img/icon_ABBI.png')))
 
 @section('header-content')
     @include('components.layout.header')

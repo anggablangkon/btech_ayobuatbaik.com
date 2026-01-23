@@ -1,11 +1,11 @@
 @extends('components.layout.app')
 
-@section('title', 'Kitab Nashaihul Ibad - Ayobuatbaik')
+@section('title', 'Kitab Nashaihul Ibad - ' . site_name())
 
-@section('og_title', 'Kitab Nashaihul Ibad - Ayobuatbaik')
+@section('og_title', 'Kitab Nashaihul Ibad - ' . site_name())
 @section('og_description', 'Kumpulan maqolah-maqolah hikmah dari Kitab Nashaihul Ibad karya Syekh Nawawi al-Bantani')
-@section('og_url', 'https://ayobuatbaik.com/kitab')
-@section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')
+@section('og_url', url()->current())
+@section('og_image', asset(site_setting('site_logo', 'img/icon_ABBI.png')))
 
 @section('header-content')
     @include('components.layout.header')

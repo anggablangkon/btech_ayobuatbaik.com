@@ -1,10 +1,10 @@
 @extends('components.layout.app')
 
-@section('title', 'Selesaikan Pembayaran - Ayobuatbaik')
-@section('og_title', 'Selesaikan Pembayaran - Ayobuatbaik')
-@section('og_description', 'Selesaikan Pembayaran - Ayobuatbaik')
-@section('og_url', 'https://ayobuatbaik.com')
-@section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')
+@section('title', 'Selesaikan Pembayaran - ' . site_name())
+@section('og_title', 'Selesaikan Pembayaran - ' . site_name())
+@section('og_description', 'Selesaikan Pembayaran - ' . site_name())
+@section('og_url', url()->current())
+@section('og_image', asset(site_setting('site_logo', 'img/icon_ABBI.png')))
 
 @section('content')
     <div class="min-h-[calc(100vh-56px)] flex items-center justify-center bg-gray-50 px-3 pb-[90px]">

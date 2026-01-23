@@ -1,8 +1,8 @@
 @extends('components.layout.app')
 
-@section('title', 'Nashaihul Ibad Bab ' . $chapter->nomor_bab . ($chapter->judul_bab ? ' : ' . $chapter->judul_bab : '') . ' - Ayobuatbaik')
+@section('title', 'Nashaihul Ibad Bab ' . $chapter->nomor_bab . ($chapter->judul_bab ? ' : ' . $chapter->judul_bab : '') . ' - ' . site_name())
 
-@section('og_title', 'Nashaihul Ibad Bab ' . $chapter->nomor_bab . ($chapter->judul_bab ? ' : ' . $chapter->judul_bab : '') . ' - Ayobuatbaik')
+@section('og_title', 'Nashaihul Ibad Bab ' . $chapter->nomor_bab . ($chapter->judul_bab ? ' : ' . $chapter->judul_bab : '') . ' - ' . site_name())
 @section('og_description', strip_tags($chapter->deskripsi))
 @section('og_url', route('home.kitab.chapter', $chapter->slug))
 @section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')

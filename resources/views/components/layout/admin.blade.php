@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@yield('title', 'Admin Dashboard - Ayobuatbaik')</title>
+    <title>@yield('title', 'Admin Dashboard - ' . site_setting('site_name_highlight', 'Ayo') . site_setting('site_name_rest', 'buatbaik'))</title>
 
     {{-- Fonts & Icons --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -13,7 +13,7 @@
 
     {{-- Vite Assets --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="icon" type="image/png" href="{{ asset('img/icon_ABBI.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset(site_setting('site_logo', 'img/icon_ABBI.png')) }}">
 
     <style>
         /* Sidebar transitions */

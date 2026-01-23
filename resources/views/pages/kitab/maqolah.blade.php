@@ -1,8 +1,8 @@
 @extends('components.layout.app')
 
-@section('title', 'Terjemah Kitab Nashaihul Ibad Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah . ' - Ayobuatbaik')
+@section('title', 'Terjemah Kitab Nashaihul Ibad Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah . ' - ' . site_name())
 
-@section('og_title', 'Terjemah Kitab Nashaihul Ibad Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah . ' - Ayobuatbaik')
+@section('og_title', 'Terjemah Kitab Nashaihul Ibad Bab ' . $chapter->nomor_bab . ' Maqolah ' . $maqolah->nomor_maqolah . ' - ' . site_name())
 @section('og_description', Str::limit(strip_tags($maqolah->konten), 160))
 @section('og_url', route('home.kitab.maqolah', ['chapterSlug' => $chapter->slug, 'id' => $maqolah->id]))
 @section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')

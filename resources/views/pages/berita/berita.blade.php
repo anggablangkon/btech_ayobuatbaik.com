@@ -5,8 +5,8 @@
 
 @section('og_title', $berita->judul)
 @section('og_description', $berita->deskripsi_singkat)
-@section('og_url', 'https://ayobuatbaik.com')
-@section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')
+@section('og_url', url()->current())
+@section('og_image', asset('storage/' . $berita->gambar))
 
 @section('header-content')
     @include('components.layout.header')

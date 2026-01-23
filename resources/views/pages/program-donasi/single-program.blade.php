@@ -1,11 +1,11 @@
 @extends('components.layout.app')
 
-@section('title', $program->title)
+@section('title', $program->title . ' - ' . site_name())
 
-@section('og_title', $program->title)
+@section('og_title', $program->title . ' - ' . site_name())
 @section('og_description', $program->short_description)
-@section('og_url', 'https://ayobuatbaik.com')
-@section('og_image', 'https://ayobuatbaik.com/storage/' . $program->gambar)
+@section('og_url', url()->current())
+@section('og_image', asset('storage/' . $program->gambar))
 
 @section('header-content')
     @include('components.layout.header-with-search')

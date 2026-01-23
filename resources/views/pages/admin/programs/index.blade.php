@@ -1,6 +1,6 @@
 @extends('components.layout.admin')
 
-@section('title', 'Kelola Program Donasi - Ayobuatbaik')
+@section('title', 'Kelola Program Donasi - ' . site_name())
 @section('page-title', 'Kelola Program Donasi')
 
 @section('content')

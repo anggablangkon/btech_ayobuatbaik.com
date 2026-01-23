@@ -77,6 +77,12 @@
             <i class="fas fa-users w-5"></i>
             <span>Daftar Pengguna</span>
         </a>
+
+        <a href="{{ route('admin.settings.index') }}"
+            class="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-gray-800 transition-colors {{ request()->routeIs('admin.settings.*') ? 'bg-gray-800' : '' }}">
+            <i class="fas fa-cog w-5"></i>
+            <span>Pengaturan Situs</span>
+        </a>
     </nav>
 
     <!-- Logout -->

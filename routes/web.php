@@ -16,7 +16,8 @@ use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\KitabController;
-use App\Http\Controllers\SitemapController; // Add this import at the top
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\Admin\SettingsController;
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
@@ -87,6 +88,10 @@ Route::middleware(["auth"])
 
         Route::resource("kitab-chapter", KitabChapterController::class)->names("kitab_chapter");
         Route::resource("kitab-maqolah", KitabMaqolahController::class)->names("kitab_maqolah");
+
+        // Site Settings
+        Route::get("settings", [SettingsController::class, "index"])->name("settings.index");
+        Route::post("settings", [SettingsController::class, "update"])->name("settings.update");
     });
 
 // Route::get('/programs', [ProgramController::class, 'index'])->name('program.index');

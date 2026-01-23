@@ -1,6 +1,6 @@
 @extends('components.layout.admin')
 
-@section('title', 'Dashboard Admin - Ayobuatbaik')
+@section('title', 'Dashboard Admin - ' . site_name())
 @section('page-title', 'Dashboard')
 
 @section('content')

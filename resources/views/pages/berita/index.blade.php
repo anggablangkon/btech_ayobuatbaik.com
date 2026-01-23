@@ -1,11 +1,11 @@
 @extends('components.layout.app')
 
-@section('title', 'Berita & Artikel - Ayobuatbaik')
+@section('title', 'Berita & Artikel - ' . site_name())
 
-@section('og_title', 'Berita & Artikel - Ayobuatbaik')
-@section('og_description', 'Berita & Artikel - Ayobuatbaik')
-@section('og_url', 'https://ayobuatbaik.com')
-@section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')
+@section('og_title', 'Berita & Artikel - ' . site_name())
+@section('og_description', 'Berita & Artikel - ' . site_name())
+@section('og_url', url()->current())
+@section('og_image', asset(site_setting('site_logo', 'img/icon_ABBI.png')))
 
 @section('header-content')
     @include('components.layout.header')

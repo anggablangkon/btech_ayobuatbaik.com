@@ -2,9 +2,7 @@
     <div class="flex items-center justify-between h-full px-2 py-2">
 
         <a href="{{ route('home') }}" class="flex-shrink-0 mr-4">
-            <h1 class="text-base font-bold text-white">
-                <span class="text-secondary">Ayo</span>buatbaik
-            </h1>
+            <h1 class="text-xl font-bold text-white"><span class="text-secondary">{{ site_setting('site_name_highlight', 'Ayo') }}</span>{{ site_setting('site_name_rest', 'buatbaik') }}</h1>
         </a>
 
         <!-- Search Bar -->

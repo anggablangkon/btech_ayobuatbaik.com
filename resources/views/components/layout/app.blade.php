@@ -5,14 +5,15 @@
     @laravelPWA
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta property="og:site_name" content="Ayobuatbaik">
-    <meta property="og:title" content="@yield('og_title', 'Ayobuatbaik - Platform Donasi Digital')">
-    <meta property="og:description" content="@yield('og_description', 'Ayobuatbaik - Platform Donasi Digital')">
+    <meta property="og:site_name" content="{{ site_setting('site_name_highlight', 'Ayo') }}{{ site_setting('site_name_rest', 'buatbaik') }}">
+    <meta property="og:title" content="@yield('og_title', site_setting('site_title', 'Platform Donasi Digital'))">
+    <meta property="og:description" content="@yield('og_description', site_setting('site_description', 'Platform donasi digital'))">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="@yield('og_url', 'https://ayobuatbaik.com')">
-    <meta property="og:image" content="@yield('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')">
+    <meta property="og:url" content="@yield('og_url', site_setting('site_url', 'https://example.com'))">
+    <meta property="og:image" content="@yield('og_image', asset(site_setting('site_logo', '/img/icon_ABBI.png')))">
 
     <!-- Meta Pixel Code -->
+    @if(site_setting('meta_pixel_id'))
     <script>
         ! function(f, b, e, v, n, t, s) {
             if (f.fbq) return;
@@ -36,15 +37,12 @@
         @auth
             @php
                 $userData = [];
-                // Validasi Email: Wajib ada dan tidak kosong
                 if (!empty(auth()->user()->email)) {
                     $userData['em'] = hash('sha256', strtolower(trim(auth()->user()->email)));
                 }
                 
-                // Validasi HP: Wajib ada dan tidak kosong
                 if (!empty(auth()->user()->phone)) {
                     $phone = preg_replace('/[^0-9]/', '', auth()->user()->phone);
-                    // Minimal 9 digit untuk dianggap valid (628...)
                     if (strlen($phone) >= 9) {
                         $userData['ph'] = hash('sha256', $phone);
                     }
@@ -52,22 +50,22 @@
             @endphp
 
             @if (!empty($userData))
-                fbq('init', '2777910462416668', {!! json_encode($userData) !!});
+                fbq('init', '{{ site_setting('meta_pixel_id') }}', {!! json_encode($userData) !!});
             @else
-                fbq('init', '2777910462416668');
+                fbq('init', '{{ site_setting('meta_pixel_id') }}');
             @endif
         @else
-            // Standard Init (Guest)
-            fbq('init', '2777910462416668');
+            fbq('init', '{{ site_setting('meta_pixel_id') }}');
         @endauth
 
         fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id=2777910462416668&ev=PageView&noscript=1" /></noscript>
+            src="https://www.facebook.com/tr?id={{ site_setting('meta_pixel_id') }}&ev=PageView&noscript=1" /></noscript>
+    @endif
     <!-- End Meta Pixel Code -->
-    <title>@yield('title', 'Ayobuatbaik - Platform Donasi Digital')</title>
-    <link rel="icon" type="image/png" href="{{ asset('img/icon_ABBI.png') }}">
+    <title>@yield('title', site_setting('site_title', 'Platform Donasi Digital'))</title>
+    <link rel="icon" type="image/png" href="{{ asset(site_setting('site_logo', 'img/icon_ABBI.png')) }}">
 
     {{-- Preconnect to Speed up Font Loading --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -99,15 +97,12 @@
         @include('components.layout.navigation')
 
         <!-- Floating WhatsApp Button -->
-        @php
-            $waNumber = '6282133337058';
-            $waMessage = 'Assalamualaikum ayobuatbaik, saya ingin berbuat baik';
-        @endphp
-
-        <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode($waMessage) }}" target="_blank"
-            class="floating-wa" onclick="fbq('track', 'Contact');">
+        @if(site_setting('whatsapp_number'))
+        <a href="https://wa.me/{{ site_setting('whatsapp_number') }}?text={{ urlencode(site_setting('whatsapp_message', 'Halo')) }}" target="_blank"
+            class="floating-wa" onclick="typeof fbq !== 'undefined' && fbq('track', 'Contact');">
             <i class="fab fa-whatsapp text-3xl"></i>
         </a>
+        @endif
     </div>
 
     @yield('scripts')

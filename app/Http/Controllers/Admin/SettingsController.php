@@ -3,62 +3,70 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Setting;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
+    /**
+     * Display settings form.
+     */
     public function index()
     {
-        $settings = [
-            "site_title" => Setting::get("site_title", "Ayobuatbaik"),
-            "site_logo" => Setting::get("site_logo"),
-            "tagline" => Setting::get("tagline", "Platform Donasi Digital"),
-            "whatsapp_number" => Setting::get("whatsapp_number", "6282133337058"),
-            "footer_description" => Setting::get(
-                "footer_description",
-                "Platform donasi digital yang menghubungkan para dermawan dengan berbagai program kemanusiaan.",
-            ),
-            "copyright_text" => Setting::get("copyright_text", "Ayobuatbaik. All rights reserved."),
-            "site_description" => Setting::get("site_description", "Ayobuatbaik - Platform Donasi Digital"),
-            "whatsapp_message" => Setting::get("whatsapp_message", "Assalamualaikum ayobuatbaik, saya ingin berbuat baik"),
-            "og_image" => Setting::get("og_image", "https://ayobuatbaik.com/img/icon_ABBI.png"),
-        ];
-
-        return view("admin.settings.index", compact("settings"));
+        $settings = SiteSetting::allCached();
+        return view('pages.admin.settings.index', compact('settings'));
     }
 
+    /**
+     * Update all settings.
+     */
     public function update(Request $request)
     {
         $request->validate([
-            "site_title" => "required|string|max:255",
-            "tagline" => "required|string|max:255",
-            "whatsapp_number" => "required|string|max:20",
-            "footer_description" => "required|string",
-            "copyright_text" => "required|string|max:255",
-            "site_description" => "required|string|max:255",
-            "whatsapp_message" => "required|string",
-            "og_image" => "nullable|url",
-            "site_logo" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
+            'site_name_highlight' => 'required|string|max:50',
+            'site_name_rest' => 'required|string|max:100',
+            'site_title' => 'required|string|max:255',
+            'site_description' => 'nullable|string|max:500',
+            'site_url' => 'nullable|url|max:255',
+            'meta_pixel_id' => 'nullable|string|max:50',
+            'whatsapp_number' => 'nullable|string|max:20',
+            'whatsapp_message' => 'nullable|string|max:255',
+            'footer_description' => 'nullable|string|max:500',
+            'footer_copyright' => 'nullable|string|max:255',
+            'site_logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:1024',
         ]);
 
         // Handle logo upload
-        if ($request->hasFile("site_logo")) {
-            $logoPath = $request->file("site_logo")->store("logos", "public");
-            Setting::set("site_logo", $logoPath);
+        if ($request->hasFile('site_logo')) {
+            $logo = $request->file('site_logo');
+            $logoName = 'logo_' . time() . '.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('img'), $logoName);
+            SiteSetting::set('site_logo', '/img/' . $logoName);
         }
 
-        // Update other settings
-        Setting::set("site_title", $request->site_title);
-        Setting::set("tagline", $request->tagline);
-        Setting::set("whatsapp_number", $request->whatsapp_number);
-        Setting::set("footer_description", $request->footer_description);
-        Setting::set("copyright_text", $request->copyright_text);
-        Setting::set("site_description", $request->site_description);
-        Setting::set("whatsapp_message", $request->whatsapp_message);
-        Setting::set("og_image", $request->og_image);
+        // Update text settings
+        $textSettings = [
+            'site_name_highlight',
+            'site_name_rest',
+            'site_title',
+            'site_description',
+            'site_url',
+            'meta_pixel_id',
+            'whatsapp_number',
+            'whatsapp_message',
+            'footer_description',
+            'footer_copyright',
+        ];
 
-        return redirect()->back()->with("success", "Settings updated successfully.");
+        foreach ($textSettings as $key) {
+            if ($request->has($key)) {
+                SiteSetting::set($key, $request->input($key));
+            }
+        }
+
+        // Clear all cache
+        SiteSetting::clearCache();
+
+        return back()->with('success', 'Pengaturan berhasil disimpan!');
     }
 }

@@ -1,7 +1,7 @@
 
 @extends('components.layout.admin')
 
-@section('title', 'Manajemen Pengguna - Admin Ayobuatbaik')
+@section('title', 'Manajemen Pengguna - Admin ' . site_name())
 
 @section('page-title', 'Daftar Pengguna')
 

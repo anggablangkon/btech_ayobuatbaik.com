@@ -1,11 +1,11 @@
 @extends('components.layout.app')
 
-@section('title', 'Login - Ayobuatbaik')
+@section('title', 'Login - ' . site_name())
 
-@section('og_title', 'Login - Ayobuatbaik')
-@section('og_description', 'Login - Ayobuatbaik')
-@section('og_url', 'https://ayobuatbaik.com')
-@section('og_image', 'https://ayobuatbaik.com/img/icon_ABBI.png')
+@section('og_title', 'Login - ' . site_name())
+@section('og_description', 'Login - ' . site_name())
+@section('og_url', url()->current())
+@section('og_image', asset(site_setting('site_logo', 'img/icon_ABBI.png')))
 
 @section('content')
     <div class="min-h-[calc(100vh-56px)] flex items-center justify-center bg-gray-50 px-4 py-10">

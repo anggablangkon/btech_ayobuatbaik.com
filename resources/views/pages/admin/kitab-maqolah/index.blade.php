@@ -1,6 +1,6 @@
 @extends('components.layout.admin')
 
-@section('title', 'Kelola Maqolah Kitab - Ayobuatbaik')
+@section('title', 'Kelola Maqolah Kitab - ' . site_name())
 @section('page-title', 'Kelola Maqolah Kitab')
 
 @section('content')

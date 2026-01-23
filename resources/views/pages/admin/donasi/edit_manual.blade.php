@@ -1,6 +1,6 @@
 @extends('components.layout.admin')
 
-@section('title', 'Edit Donasi Manual - Ayobuatbaik')
+@section('title', 'Edit Donasi Manual - ' . site_name())
 @section('page-title', 'Edit Donasi Manual')
 
 @section('content')

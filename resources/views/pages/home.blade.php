@@ -1,6 +1,6 @@
 @extends('components.layout.app')
 
-@section('title', 'Ayobuatbaik - Platform Donasi Digital')
+@section('title', site_name() . ' - ' . site_setting('site_description', 'Platform Donasi Digital'))
 
 @section('header-content')
     @include('components.layout.header-with-search')

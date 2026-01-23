@@ -11,7 +11,7 @@
                     <img src="{{ asset('img/icon ABBI.png') }}" alt="">
                 </div>
                 <span class="text-white font-bold text-lg">
-                    <span class="text-secondary">Ayo</span>buatbaik
+                    <span class="text-secondary">{{ site_setting('site_name_highlight', 'Ayo') }}</span>{{ site_setting('site_name_rest', 'buatbaik') }}
                 </span>
             </div>
 
