@@ -21,8 +21,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useTailwind();
 
-        // if (config("app.env") === "production") {
-        //     URL::forceScheme("https");
-        // }
+        if (config("app.env") === "production") {
+            URL::forceScheme("https");
+        }
     }
 }

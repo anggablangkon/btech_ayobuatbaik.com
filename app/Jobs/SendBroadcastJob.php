@@ -49,6 +49,15 @@ class SendBroadcastJob implements ShouldQueue
             $processed = 0;
 
             $imageUrl = $this->broadcast->image_path ? asset($this->broadcast->image_path) : null;
+            
+            // Force HTTPS for image URL to ensure Fonnte can access it
+            if ($imageUrl && str_starts_with($imageUrl, 'http://')) {
+                $imageUrl = str_replace('http://', 'https://', $imageUrl);
+            }
+
+            if ($imageUrl) {
+                Log::info("Broadcast Image URL: " . $imageUrl);
+            }
 
             foreach ($chunks as $chunk) {
                 // Normalize numbers: 08xxx -> 628xxx
