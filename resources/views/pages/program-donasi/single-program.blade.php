@@ -314,7 +314,7 @@
                     </div>
 
                     <div>
-                        <p class="text-xs text-gray-500 mb-1">Atau masukkan nominal lain (Min Rp 10.000)</p>
+                        <p class="text-xs text-gray-500 mb-1">Atau masukkan nominal lain (Min Rp 1.000)</p>
                         <div
                             class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
                             <span class="bg-gray-100 px-3 py-2 text-gray-600 text-sm font-bold">Rp</span>
