@@ -4,20 +4,26 @@ namespace App\Helpers;
 
 class Fonnte
 {
-    public static function send($target, $message)
+    public static function send($target, $message, $url = null)
     {
         $token = env("FONNTE_API_KEY");
 
         $curl = curl_init();
 
+        $postFields = [
+            "target" => $target,
+            "message" => $message,
+        ];
+
+        if ($url) {
+            $postFields['url'] = $url;
+        }
+
         curl_setopt_array($curl, [
             CURLOPT_URL => "https://api.fonnte.com/send",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => [
-                "target" => $target,
-                "message" => $message,
-            ],
+            CURLOPT_POSTFIELDS => $postFields,
             CURLOPT_HTTPHEADER => ["Authorization: $token"],
         ]);
 

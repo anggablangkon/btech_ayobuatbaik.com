@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class AutoExpireDonations extends Command
 {
-    protected $signature = "donations:auto-expire";
+    protected $signature = "donations:auto-expire {--dry-run : Preview donatur yang akan di expire}";
     protected $description = "Auto-expire donations yang sudah melewati batas waktu";
 
     public function handle()

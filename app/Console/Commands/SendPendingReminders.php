@@ -9,7 +9,7 @@ use Log;
 
 class SendPendingReminders extends Command
 {
-    protected $signature = "donations:send-reminders";
+    protected $signature = "donations:send-reminders {--dry-run : Preview donatur yang akan dikirimi tanpa mengirim WA}";
     protected $description = "Kirim Reminder WA untuk donasi pending";
 
     public function handle()

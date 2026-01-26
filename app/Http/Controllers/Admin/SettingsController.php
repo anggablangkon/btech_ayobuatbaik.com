@@ -34,6 +34,11 @@ class SettingsController extends Controller
             'footer_description' => 'nullable|string|max:500',
             'footer_copyright' => 'nullable|string|max:255',
             'site_logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:1024',
+            'theme_primary' => 'nullable|string|max:20',
+            'theme_secondary' => 'nullable|string|max:20',
+            'theme_hijau' => 'nullable|string|max:20',
+            'theme_gold_light' => 'nullable|string|max:20',
+            'theme_gold_dark' => 'nullable|string|max:20',
         ]);
 
         // Handle logo upload
@@ -56,6 +61,11 @@ class SettingsController extends Controller
             'whatsapp_message',
             'footer_description',
             'footer_copyright',
+            'theme_primary',
+            'theme_secondary',
+            'theme_hijau',
+            'theme_gold_light',
+            'theme_gold_dark',
         ];
 
         foreach ($textSettings as $key) {

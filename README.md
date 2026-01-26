@@ -16,8 +16,55 @@
 - **📚 Kitab & Hikmah**: Akses ke sumber literasi islami seperti Kitab Nashohul Ibad (dan fitur Al-Qur'an, Sholawat segera hadir).
 - **📱 PWA Support**: Dapat diinstal sebagai aplikasi di smartphone (Android/iOS) untuk akses lebih cepat.
 - **💳 Payment Gateway**: Integrasi pembayaran yang aman dan mudah (via Midtrans).
-- **📲 WA Followup Reminder**: Kirim reminder otomatis via WhatsApp ke donatur yang sudah X hari tidak donasi.
+- **📲 Broadcast WA**:
+    - Kirim pesan massal ke donatur (dengan fitur antrian/queue).
+    - Dukungan pengiriman gambar.
+    - Fitur **Edit & Resend** untuk kirim ulang broadcast tanpa upload ulang.
+    - Opsi **Proses Antrian Manual** via Admin Panel.
+- **🎨 Pengaturan Tema & Situs**:
+    - Ubah warna utama (Primary Color) aplikasi secara dinamis via Admin Panel.
+    - Upload Logo & Favicon kustom.
+    - Pengaturan informasi kontak & sosial media.
+- **⏰ WA Followup Reminder**: Kirim reminder otomatis via WhatsApp ke donatur yang sudah X hari tidak donasi.
 - **🔍 Pencarian**: Fitur pencarian program donasi yang responsif.
+
+## ⚙️ Konfigurasi Cron Job (cPanel)
+
+Karena menggunakan *Shared Hosting* (cPanel), penjadwalan tugas diatur secara manual (bukan via `schedule:run` tunggal) untuk keandalan maksimal. Berikut adalah **4 Cron Job Wajib** yang harus dipasang:
+
+### 1. Queue Worker (Wajib untuk Broadcast)
+Menjalankan antrian pengiriman pesan massal di latar belakang.
+- **Jadwal**: `* * * * *` (Setiap Menit)
+- **Command**:
+  ```bash
+  /usr/bin/php /home/uXXXX/domains/domain.com/public_html/artisan queue:work --stop-when-empty >> /dev/null 2>&1
+  ```
+
+### 2. Kirim Reminder Donasi Tertunda
+Mengirim WA ke donatur yang belum transfer setelah checkout.
+- **Jadwal**: `*/10 * * * *` (Setiap 10 Menit)
+- **Command**:
+  ```bash
+  /usr/bin/php /home/uXXXX/domains/domain.com/public_html/artisan donations:send-reminders >> /dev/null 2>&1
+  ```
+
+### 3. Maintenance Harian (Auto Expire & Bersih-bersih)
+Membatalkan donasi kadaluarsa dan menghapus data sampah.
+- **Jadwal**: `0 0 * * *` (Setiap Jam 00:00)
+- **Command**:
+  ```bash
+  /usr/bin/php /home/uXXXX/domains/domain.com/public_html/artisan donations:auto-expire && php artisan donations:delete-failed >> /dev/null 2>&1
+  ```
+
+### 4. Followup Donatur Lama
+Mengirim sapaan ke donatur yang sudah lama tidak berdonasi.
+- **Jadwal**: `0 9 * * *` (Setiap Hari Jam 09:00 Pagi)
+- **Command**:
+  ```bash
+  /usr/bin/php /home/uXXXX/domains/domain.com/public_html/artisan donations:send-followup >> /dev/null 2>&1
+  ```
+
+> **Catatan**: Sesuaikan path `/home/uXXXX/...` dengan konfigurasi hosting Anda.
 
 ## 🛠️ Teknologi yang Digunakan
 

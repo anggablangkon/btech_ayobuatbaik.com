@@ -70,16 +70,20 @@ class SendDonationFollowup extends Command
             $phone = preg_replace("/^0/", "62", $donor->donor_phone);
             $donorName = $donor->donor_name ?: 'Sahabat Baikku';
 
-            $message = "Assalamu'alaikum {$donorName} 🙏
+            $message = "Assalamu’alaikum warahmatullahi wabarakatuh 🙏
 
-Terima kasih sudah pernah berdonasi di AyoBuatBaik.
+Halo Kak {$donorName}, terima kasih banyak atas kebaikan kakak yang sebelumnya sudah berdonasi melalui AyoBuatBaik. Dukungan kakak sangat berarti dan telah membantu menghadirkan manfaat nyata bagi mereka yang membutuhkan.
 
-Sudah {$days} hari sejak donasi terakhir Anda. Yuk lanjutkan kebaikan! Setiap donasi sangat berarti bagi mereka yang membutuhkan.
+Kami ingin mengajak kakak kembali melanjutkan kebaikan ini. Setiap donasi, sekecil apa pun, insyaAllah menjadi harapan besar bagi para penerima manfaat dan bisa menjadi amal jariyah untuk kakak.
 
-🔗 Donasi sekarang: https://ayobuatbaik.com
+Bila berkenan, kakak bisa berdonasi kembali melalui tautan berikut:
+🔗 https://ayobuatbaik.com
 
-Jazakallah Khairan 🤲
-Tim DKM MAsjid Salam Selfa";
+Semoga Allah membalas setiap kebaikan kakak dengan keberkahan, kesehatan, dan rezeki yang berlimpah.
+Jazakallahu khairan katsiran 🤲
+
+Salam hangat,
+Tim AyoBuatBaik";
 
             try {
                 Fonnte::send($phone, $message);

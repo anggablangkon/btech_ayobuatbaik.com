@@ -5,7 +5,7 @@
             {{-- Clone slides terakhir di awal --}}
             @foreach ($sliders as $slide)
                 @php
-                    $fallbackImageUrl = 'https://placehold.co/1600x900/4CAF50/FFFFFF?text=Ayobuatbaik+Slider';
+                    $fallbackImageUrl = 'https://placehold.co/1600x900/4CAF50/FFFFFF?text=' . urlencode(site_setting('site_name_highlight', 'Slider') . ' ' . site_setting('site_name_rest', 'Image'));
                     $imageUrl = $slide->gambar ? asset('storage/' . $slide->gambar) : $fallbackImageUrl;
                 @endphp
                 <a href="{{ $slide->url ?? '#' }}" data-slide-clone="head"
@@ -19,7 +19,7 @@
             {{-- Slides asli --}}
             @foreach ($sliders as $slide)
                 @php
-                    $fallbackImageUrl = 'https://placehold.co/1600x900/4CAF50/FFFFFF?text=Ayobuatbaik+Slider';
+                    $fallbackImageUrl = 'https://placehold.co/1600x900/4CAF50/FFFFFF?text=' . urlencode(site_setting('site_name_highlight', 'Slider') . ' ' . site_setting('site_name_rest', 'Image'));
                     $imageUrl = $slide->gambar ? asset('storage/' . $slide->gambar) : $fallbackImageUrl;
                 @endphp
                 <a href="{{ $slide->url ?? '#' }}" data-slide-index="{{ $loop->index }}"
@@ -35,7 +35,7 @@
             {{-- Clone slides pertama di akhir --}}
             @foreach ($sliders as $slide)
                 @php
-                    $fallbackImageUrl = 'https://placehold.co/1600x900/4CAF50/FFFFFF?text=Ayobuatbaik+Slider';
+                    $fallbackImageUrl = 'https://placehold.co/1600x900/4CAF50/FFFFFF?text=' . urlencode(site_setting('site_name_highlight', 'Slider') . ' ' . site_setting('site_name_rest', 'Image'));
                     $imageUrl = $slide->gambar ? asset('storage/' . $slide->gambar) : $fallbackImageUrl;
                 @endphp
                 <a href="{{ $slide->url ?? '#' }}" data-slide-clone="tail"

@@ -8,5 +8,5 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Donation Followup Reminder - Jalan setiap hari jam 09:00
-Schedule::command('donations:send-followup')->dailyAt('09:00');
+// Donation Followup Reminder - Manual via cPanel (Setiap 3 hari)
+// Schedule::command('donations:send-followup')->cron('0 9 */3 * *');

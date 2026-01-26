@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BroadcastController;
 use App\Http\Controllers\Admin\KategoriDonasiController;
 use App\Http\Controllers\Admin\PenggalangDanaController;
 use App\Http\Controllers\Admin\ProgramDonasiController;
@@ -91,6 +92,10 @@ Route::middleware(["auth"])
         Route::resource("kitab", AdminKitabController::class)->names("kitab");
         Route::resource("kitab-chapter", KitabChapterController::class)->names("kitab_chapter");
         Route::resource("kitab-maqolah", KitabMaqolahController::class)->names("kitab_maqolah");
+
+        // Broadcast WA
+        Route::resource('broadcast', BroadcastController::class);
+        Route::post('broadcast/process-queue', [BroadcastController::class, 'processQueue'])->name('broadcast.process_queue');
 
         // Site Settings
         Route::get("settings", [SettingsController::class, "index"])->name("settings.index");

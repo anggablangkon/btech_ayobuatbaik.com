@@ -81,6 +81,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        :root {
+            --color-primary: {{ hex2rgb(site_setting('theme_primary', '#242124')) }};
+            --color-secondary: {{ hex2rgb(site_setting('theme_secondary', '#daaf65')) }};
+            --color-hijau: {{ hex2rgb(site_setting('theme_hijau', '#16a34a')) }};
+            --color-gold-light: {{ hex2rgb(site_setting('theme_gold_light', '#F7EF8A')) }};
+            --color-gold-dark: {{ hex2rgb(site_setting('theme_gold_dark', '#B8860B')) }};
+        }
+    </style>
 </head>
 
 <body class="bg-grayLight font-poppins">

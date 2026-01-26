@@ -128,6 +128,85 @@
                        placeholder="© 2025 Nama Website. All rights reserved.">
             </div>
 
+            <hr class="border-gray-200">
+
+            {{-- Theme Colors --}}
+            <div>
+                <h4 class="font-bold text-gray-800 mb-4">Pengaturan Tema (Warna)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Warna Utama (Primary)</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" name="theme_primary" id="input_theme_primary"
+                                   value="{{ $settings['theme_primary'] ?? '#242124' }}"
+                                   class="h-10 w-16 p-1 border border-gray-300 rounded cursor-pointer"
+                                   oninput="document.getElementById('text_theme_primary').value = this.value">
+                            <input type="text" id="text_theme_primary" value="{{ $settings['theme_primary'] ?? '#242124' }}" 
+                                   class="w-24 text-sm p-2 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
+                                   placeholder="#000000"
+                                   oninput="let v=this.value; if(!v.startsWith('#')) v='#'+v; if(/^#[0-9A-F]{6}$/i.test(v)) document.getElementById('input_theme_primary').value = v;">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Warna dasar web (footer, tombol gelap).</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Warna Sekunder (Secondary)</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" name="theme_secondary" id="input_theme_secondary"
+                                   value="{{ $settings['theme_secondary'] ?? '#daaf65' }}"
+                                   class="h-10 w-16 p-1 border border-gray-300 rounded cursor-pointer"
+                                   oninput="document.getElementById('text_theme_secondary').value = this.value">
+                             <input type="text" id="text_theme_secondary" value="{{ $settings['theme_secondary'] ?? '#daaf65' }}" 
+                                    class="w-24 text-sm p-2 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    placeholder="#000000"
+                                    oninput="let v=this.value; if(!v.startsWith('#')) v='#'+v; if(/^#[0-9A-F]{6}$/i.test(v)) document.getElementById('input_theme_secondary').value = v;">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Warna aksen utama (highlight, tombol aksi).</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Warna Indikator (Success/WA)</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" name="theme_hijau" id="input_theme_hijau"
+                                   value="{{ $settings['theme_hijau'] ?? '#16a34a' }}"
+                                   class="h-10 w-16 p-1 border border-gray-300 rounded cursor-pointer"
+                                   oninput="document.getElementById('text_theme_hijau').value = this.value">
+                             <input type="text" id="text_theme_hijau" value="{{ $settings['theme_hijau'] ?? '#16a34a' }}" 
+                                    class="w-24 text-sm p-2 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    placeholder="#000000"
+                                    oninput="let v=this.value; if(!v.startsWith('#')) v='#'+v; if(/^#[0-9A-F]{6}$/i.test(v)) document.getElementById('input_theme_hijau').value = v;">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Warna untuk tombol WhatsApp dan pesan sukses.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Warna Variasi Terang</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" name="theme_gold_light" id="input_theme_gold_light"
+                                   value="{{ $settings['theme_gold_light'] ?? '#F7EF8A' }}"
+                                   class="h-10 w-16 p-1 border border-gray-300 rounded cursor-pointer"
+                                   oninput="document.getElementById('text_theme_gold_light').value = this.value">
+                             <input type="text" id="text_theme_gold_light" value="{{ $settings['theme_gold_light'] ?? '#F7EF8A' }}" 
+                                    class="w-24 text-sm p-2 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    placeholder="#000000"
+                                    oninput="let v=this.value; if(!v.startsWith('#')) v='#'+v; if(/^#[0-9A-F]{6}$/i.test(v)) document.getElementById('input_theme_gold_light').value = v;">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Warna variasi gradasi terang.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Warna Variasi Gelap</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" name="theme_gold_dark" id="input_theme_gold_dark"
+                                   value="{{ $settings['theme_gold_dark'] ?? '#B8860B' }}"
+                                   class="h-10 w-16 p-1 border border-gray-300 rounded cursor-pointer"
+                                   oninput="document.getElementById('text_theme_gold_dark').value = this.value">
+                             <input type="text" id="text_theme_gold_dark" value="{{ $settings['theme_gold_dark'] ?? '#B8860B' }}" 
+                                    class="w-24 text-sm p-2 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    placeholder="#000000"
+                                    oninput="let v=this.value; if(!v.startsWith('#')) v='#'+v; if(/^#[0-9A-F]{6}$/i.test(v)) document.getElementById('input_theme_gold_dark').value = v;">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Warna variasi gradasi gelap (hover).</p>
+                    </div>
+                </div>
+            </div>
+
             {{-- Submit --}}
             <div class="flex justify-end pt-4">
                 <button type="submit" 

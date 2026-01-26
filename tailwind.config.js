@@ -6,12 +6,12 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: "#242124",
-                secondary: "#daaf65",
+                primary: "rgb(var(--color-primary) / <alpha-value>)",
+                secondary: "rgb(var(--color-secondary) / <alpha-value>)",
                 // secondary: "#E5B121",
-                hijau: "#16a34a",
-                goldLight: "#F7EF8A",
-                goldDark: "#B8860B",
+                hijau: "rgb(var(--color-hijau) / <alpha-value>)",
+                goldLight: "rgb(var(--color-gold-light) / <alpha-value>)",
+                goldDark: "rgb(var(--color-gold-dark) / <alpha-value>)",
                 grayLight: "#F5F5F5",
                 grayDark: "#333333",
             },
@@ -22,3 +22,13 @@ export default {
     },
     plugins: [require("@tailwindcss/typography")],
 };
+
+
+// primary: "#242124",
+//                 secondary: "#daaf65",
+//                 // secondary: "#E5B121",
+//                 hijau: "#16a34a",
+//                 goldLight: "#F7EF8A",
+//                 goldDark: "#B8860B",
+//                 grayLight: "#F5F5F5",
+//                 grayDark: "#333333",
