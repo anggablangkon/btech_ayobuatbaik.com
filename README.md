@@ -144,3 +144,15 @@ Project ini dilisensikan di bawah [MIT License](https://opensource.org/licenses/
 
 ---
 *Dibuat dengan ❤️ untuk menebar kebaikan.*
+
+## 📝 Catatan Update (Januari 2026)
+
+### 1. Ekspor Data Donatur (Smart Logic)
+- **Ekspor Donatur Unik**: Fitur baru untuk mengunduh daftar donatur yang sudah dideduplikasi berdasarkan Nomor HP.
+- **Smart Name**: Sistem otomatis memilih "Nama Asli" dari riwayat donasi jika donatur pernah menggunakan nama asli, meskipun di donasi terakhir menggunakan "Hamba Allah".
+- **Smart Email**: Jika email kosong pada donasi terakhir, sistem akan mencari email dari riwayat donasi sebelumnya.
+- **Excel Friendly**: Format CSV kini menggunakan pemisah **Titik Koma (;)** dan **BOM Header** agar langsung rapi saat dibuka di Excel (Region Indonesia). Nomor HP juga diformat dengan tanda kutip (`'`) agar tidak berubah menjadi angka ilmiah.
+
+### 2. Fitur Broadcast WhatsApp
+- **Target CSV (Jamaah)**: Admin kini bisa mengirim broadcast ke daftar nomor HP kustom dengan mengupload file `.csv` atau `.txt`.
+- **Standarisasi Nomor HP**: Sistem "Centralized Phone Normalization" telah diterapkan. Input nomor seperti `0812...`, `812...`, atau `62812...` akan otomatis dikonversi menjadi standar Fonnte (`628...`) di seluruh fitur aplikasi.

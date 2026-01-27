@@ -47,27 +47,36 @@ Halaman khusus untuk pemilik/admin mengelola seluruh aktivitas platform.
 ### 2. 📢 Broadcast WhatsApp (Fitur Premium)
 Alat pemasaran yang sangat powerful untuk menjangkau donatur.
 - **Kirim Pesan Massal**: Kirim info program baru ke seluruh database donatur sekaligus.
+- **Upload Target CSV (Baru)**: Kirim broadcast ke daftar nomor HP kustom (misal: jamaah kajian) dengan mengupload file Excel/CSV.
+- **Auto-Format Nomor**: Sistem otomatis memperbaiki format nomor HP (08xx/628xx) menjadi standar internasional.
 - **Dukungan Gambar**: Bisa menyertakan poster/banner program (Syarat: Akun Fonnte support file).
-- **Target Audience**: Bisa pilih kirim ke semua donatur atau target spesifik.
-- **Edit & Resend**: Bisa menggunakan ulang materi broadcast lama untuk dikirim kembali.
 - **Sistem Antrian (Queue)**: Pengiriman dilakukan bertahap di background agar server tidak down.
 
-### 3. 📝 Manajemen Program Donasi
+### 3. 💰 Manajemen Transaksi Donasi (Baru)
+Pusat data keuangan dan riwayat donasi.
+- **Daftar Donasi Lengkap**: Melihat seluruh transaksi masuk baik Online maupun Offline.
+- **Input Donasi Manual**: Admin bisa mencatat donasi Tunai/Titipan agar tetap terdata di laporan pembukuan.
+- **Filter Canggih**: Cari donasi berdasarkan Nama, Program, Status, atau Tanggal.
+- **Ekspor Laporan**:
+    - **Ekspor CSV**: Unduh data transaksi lengkap.
+    - **Ekspor Donatur Unik**: Fitur pintar untuk merekap siapa saja yang berdonasi (Deduplikasi per Nomor HP). Sistem otomatis mengenali "Nama Asli" donatur dan melengkapi email yang kosong.
+
+### 4. 📝 Manajemen Program Donasi
 - **Buat/Edit Program**: Upload foto, tulis deskripsi, set target dana, dan batas waktu.
 - **Kategori & Verified**: Kelola kategori donasi dan tanda "Verified" untuk program terpercaya.
 - **Kabar Terbaru**: Admin bisa memposting update penyaluran dana ("Kabar") di setiap program untuk transparansi ke donatur.
 
-### 4. ⚙️ Pengaturan Tema & Situs (Dynamic Settings)
+### 5. ⚙️ Pengaturan Tema & Situs (Dynamic Settings)
 Admin dapat mengubah tampilan website tanpa koding:
 - **Ganti Warna Utama**: Ubah warna tema aplikasi (misal: dari Hijau ke Biru) langsung dari admin.
 - **Upload Identitas**: Ganti Logo, Favicon, Nama Situs, dan Deskripsi SEO.
 - **Kontak & Sosmed**: Update nomor WA admin, link Instagram, Facebook, dll.
 
-### 5. 📖 Manajemen Konten Islami (Kitab)
+### 6. 📖 Manajemen Konten Islami (Kitab)
 - **Input Kitab Baru**: Tambahkan judul kitab baru.
 - **Kelola Bab & Maqolah**: Tulis teks Arab dan terjemahan untuk konten kitab.
 
-### 6. 👥 Manajemen Pengguna
+### 7. 👥 Manajemen Pengguna
 - **Kelola User/Admin**: Tambah admin baru atau kelola akun donatur yang terdaftar.
 
 ---

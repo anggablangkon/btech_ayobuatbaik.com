@@ -81,8 +81,6 @@ class SendBroadcastJob implements ShouldQueue
                     if (isset($json['status']) && !$json['status']) {
                         Log::error("Broadcast Job Fonnte Error: " . ($json['reason'] ?? 'Unknown error'), ['response' => $json]);
                         // Optional: Mark as partially failed? For now just log.
-                        // But if it's a token issue, maybe should stop?
-                        // Let's just log for now to debug.
                     }
                 } catch (\Exception $e) {
                     Log::error("Broadcast Job Partial Fail: " . $e->getMessage());
@@ -125,7 +123,9 @@ class SendBroadcastJob implements ShouldQueue
                 $numbers = $this->broadcast->target_data['csv_numbers'];
             }
         }
-        // Add other targets here (e.g. 'all', 'subscribers') if you have Users table with phones
+        // Tambahkan target yang lain disini, (e.g. 'Semua', 'pengikut') jika kita punya user table dengan nomor
+
+        
 
         return $numbers;
     }
