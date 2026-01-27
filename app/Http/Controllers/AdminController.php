@@ -357,6 +357,12 @@ class AdminController extends Controller
                     }
                 }
 
+                // --- LOGIKA SMART EMAIL (BACKFILL EMAIL) ---
+                // Jika email di data gabungan masih kosong, TAPI di transaksi ini ada emailnya, ambil email ini!
+                if (empty($uniqueDonors[$key]['email']) && !empty($donation->donor_email)) {
+                    $uniqueDonors[$key]['email'] = $donation->donor_email;
+                }
+
                 // Agregasi Angka
                 $uniqueDonors[$key]['total_amount'] += $donation->amount;
                 $uniqueDonors[$key]['frequency']++;
