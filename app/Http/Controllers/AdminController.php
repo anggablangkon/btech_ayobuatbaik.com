@@ -302,8 +302,14 @@ class AdminController extends Controller
         return response()->streamDownload(function () {
             $handle = fopen("php://output", "w");
 
-            // Header CSV - Gunakan quote untuk memastikan Excel membaca dengan benar
-            fputcsv($handle, ["No", "Nama Donatur", "Telepon", "Email", "Total Donasi (Rp)", "Frekuensi Donasi", "Terakhir Donasi"]);
+            // Tambahkan BOM untuk fix karakter aneh di Excel Windows
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Gunakan SEMICOLON (;) sebagai separator agar otomatis rapi di Excel Indonesia/Eropa
+            $separator = ';';
+
+            // Header CSV
+            fputcsv($handle, ["No", "Nama Donatur", "Telepon", "Email", "Total Donasi (Rp)", "Frekuensi Donasi", "Terakhir Donasi"], $separator);
 
             // Ambil semua donasi sukses, urutkan dari yang TERBARU
             // PENTING: Order Descending penting untuk logika pemilihan nama
@@ -368,7 +374,7 @@ class AdminController extends Controller
                     $donor['total_amount'],
                     $donor['frequency'],
                     $donor['last_donation'],
-                ]);
+                ], $separator);
             }
 
             fclose($handle);
