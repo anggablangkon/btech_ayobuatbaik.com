@@ -253,8 +253,14 @@ class AdminController extends Controller
         return response()->streamDownload(function () use ($search, $status, $programId) {
             $handle = fopen("php://output", "w");
 
+            // Tambahkan BOM untuk fix karakter aneh di Excel Windows
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Gunakan SEMICOLON (;) sebagai separator agar otomatis rapi di Excel Indonesia/Eropa
+            $separator = ';';
+
             // Header CSV
-            fputcsv($handle, ["No", "Kode Donasi", "Tanggal", "Nama Donatur", "Telepon", "Email", "Program", "Nominal", "Status", "Catatan"]);
+            fputcsv($handle, ["No", "Kode Donasi", "Tanggal", "Nama Donatur", "Telepon", "Email", "Program", "Nominal", "Status", "Catatan"], $separator);
 
             // Query Data (Sama dengan filter index)
             $query = Donation::with("program")
@@ -276,20 +282,23 @@ class AdminController extends Controller
                 });
 
             // Chunking untuk performa jika data banyak
-            $query->chunk(500, function ($donations) use ($handle) {
+            $query->chunk(500, function ($donations) use ($handle, $separator) {
                 foreach ($donations as $index => $donation) {
+                    // Normalisasi HP biar kebaca teks di excel
+                    $phone = preg_replace('/[^0-9]/', '', $donation->donor_phone);
+
                     fputcsv($handle, [
                         $donation->id,
                         $donation->donation_code,
                         $donation->created_at->format("Y-m-d H:i:s"),
                         $donation->donor_name,
-                        $donation->donor_phone,
+                        "'" . $phone, // Kasih kutip biar excel ga auto format jadi scientific
                         $donation->donor_email,
                         $donation->program ? $donation->program->title : "Program Dihapus",
                         $donation->amount,
                         $donation->status,
                         $donation->note,
-                    ]);
+                    ], $separator);
                 }
             });
 
