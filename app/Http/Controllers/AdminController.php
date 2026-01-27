@@ -297,6 +297,70 @@ class AdminController extends Controller
         }, "laporan-donasi-" . date("Y-m-d-His") . ".csv");
     }
 
+    public function exportDonors(Request $request)
+    {
+        return response()->streamDownload(function () {
+            $handle = fopen("php://output", "w");
+
+            // Header CSV
+            fputcsv($handle, ["No", "Nama Donatur", "Telepon", "Email", "Total Donasi (Rp)", "Frekuensi Donasi", "Terakhir Donasi"]);
+
+            // Ambil semua donasi sukses
+            $donations = Donation::where('status', 'success')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            // Array untuk menampung data unik
+            // Key format: PHONE_NUMBER (bakal jadi identifier unik)
+            $uniqueDonors = [];
+
+            foreach ($donations as $donation) {
+                // Normalisasi Nomor HP (Hapus karakter non-angka)
+                $phone = preg_replace('/[^0-9]/', '', $donation->donor_phone);
+
+                // Identifier unik: Pakai HP kalau ada, kalau kosong pakai Email
+                $key = !empty($phone) ? $phone : $donation->donor_email;
+
+                // Jika key masih kosong (kasus aneh), skip atau grouped 'unknown'
+                if (empty($key)) {
+                    continue; 
+                }
+
+                if (!isset($uniqueDonors[$key])) {
+                    // Inisialisasi Data Baru (karena order by desc, ini pasti data terbaru alias nama terbaru)
+                    $uniqueDonors[$key] = [
+                        'name' => $donation->donor_name,
+                        'phone' => "'".$donation->donor_phone, // Kasih kutip biar excel ga auto format jadi scientific
+                        'email' => $donation->donor_email,
+                        'total_amount' => 0,
+                        'frequency' => 0,
+                        'last_donation' => $donation->created_at->format('Y-m-d H:i:s'),
+                    ];
+                }
+
+                // Agregasi Data
+                $uniqueDonors[$key]['total_amount'] += $donation->amount;
+                $uniqueDonors[$key]['frequency']++;
+            }
+
+            // Tulis ke CSV
+            $no = 1;
+            foreach ($uniqueDonors as $donor) {
+                fputcsv($handle, [
+                    $no++,
+                    $donor['name'],
+                    $donor['phone'],
+                    $donor['email'],
+                    $donor['total_amount'],
+                    $donor['frequency'],
+                    $donor['last_donation'],
+                ]);
+            }
+
+            fclose($handle);
+        }, "data-donatur-unik-" . date("Y-m-d-His") . ".csv");
+    }
+
     public function users()
     {
         $users = User::latest()->paginate(15);

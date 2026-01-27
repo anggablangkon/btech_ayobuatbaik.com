@@ -29,6 +29,14 @@
                         <i class="fas fa-download"></i>
                         <span>Ekspor CSV</span>
                     </a>
+
+                    {{-- TOMBOL EKSPOR DONATUR UNIK --}}
+                    <a href="{{ route('admin.donasi.export_donors') }}" target="_blank"
+                        class="ml-1 inline-flex items-center gap-1 bg-purple-600 text-white px-2 py-1 text-xs rounded-lg hover:bg-purple-700 transition"
+                        title="Ekspor Data Donatur (Digabungkan per No HP)">
+                        <i class="fas fa-users"></i>
+                        <span>Ekspor Donatur (Unik)</span>
+                    </a>
                 </div>
 
                 <form id="controlsForm" method="GET"

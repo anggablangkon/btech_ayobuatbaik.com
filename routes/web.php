@@ -73,6 +73,7 @@ Route::middleware(["auth"])
         Route::get("donasi/{id}/editManual", [AdminController::class, "pageEditManualDonasi"])->name("donasi.editManual");
         Route::put("donasi/{id}", [AdminController::class, "updateManualDonasi"])->name("donasi.updateManual");
         Route::get("donasi/export", [AdminController::class, "exportDonasi"])->name("donasi.export");
+        Route::get("donasi/export-donors", [AdminController::class, "exportDonors"])->name("donasi.export_donors");
         Route::get("/users", [AdminController::class, "users"])->name("users");
         Route::post("/users/{user}/toggle-admin", [AdminController::class, "toggleAdmin"])->name("users.toggle-admin");
 
