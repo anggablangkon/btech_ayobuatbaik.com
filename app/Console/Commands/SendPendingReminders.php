@@ -31,7 +31,7 @@ class SendPendingReminders extends Command
         $failed = 0;
 
         foreach ($pendingDonations as $donation) {
-            $phone = preg_replace("/^0/", "62", $donation->donor_phone);
+            $phone = $donation->donor_phone;
             $programName = $donation->program->title;
             $amount = number_format($donation->amount, 0, ",", ".");
             $url = route("donation.status", $donation->donation_code);

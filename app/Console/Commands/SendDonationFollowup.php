@@ -67,7 +67,7 @@ class SendDonationFollowup extends Command
         $failed = 0;
 
         foreach ($donors as $donor) {
-            $phone = preg_replace("/^0/", "62", $donor->donor_phone);
+            $phone = $donor->donor_phone;
             $donorName = $donor->donor_name ?: 'Sahabat Baikku';
 
             $message = "Assalamu’alaikum warahmatullahi wabarakatuh 🙏
