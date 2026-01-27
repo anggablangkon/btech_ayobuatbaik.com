@@ -102,3 +102,6 @@ Aplikasi ini memiliki "robot" yang bekerja sendiri 24 jam (via Cron Job) untuk m
 
 ---
 *Dokumen ini dibuat untuk memudahkan pemilik aplikasi memaksimalkan potensi AyoBuatBaik dalam menebar manfaat.*
+
+<!-- Meta Pixel Code -->
+2777910462416668

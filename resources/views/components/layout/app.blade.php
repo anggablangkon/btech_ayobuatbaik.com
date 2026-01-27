@@ -13,7 +13,10 @@
     <meta property="og:image" content="@yield('og_image', asset(site_setting('site_logo', '/img/icon_ABBI.png')))">
 
     <!-- Meta Pixel Code -->
-    @if(site_setting('meta_pixel_id'))
+    @php
+        $pixelId = site_setting('meta_pixel_id', config('services.meta.pixel_id'));
+    @endphp
+    @if($pixelId)
     <script>
         ! function(f, b, e, v, n, t, s) {
             if (f.fbq) return;
@@ -50,18 +53,18 @@
             @endphp
 
             @if (!empty($userData))
-                fbq('init', '{{ site_setting('meta_pixel_id') }}', {!! json_encode($userData) !!});
+                fbq('init', '{{ $pixelId }}', {!! json_encode($userData) !!});
             @else
-                fbq('init', '{{ site_setting('meta_pixel_id') }}');
+                fbq('init', '{{ $pixelId }}');
             @endif
         @else
-            fbq('init', '{{ site_setting('meta_pixel_id') }}');
+            fbq('init', '{{ $pixelId }}');
         @endauth
 
         fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id={{ site_setting('meta_pixel_id') }}&ev=PageView&noscript=1" /></noscript>
+            src="https://www.facebook.com/tr?id={{ $pixelId }}&ev=PageView&noscript=1" /></noscript>
     @endif
     <!-- End Meta Pixel Code -->
     <title>@yield('title', site_setting('site_title', 'Platform Donasi Digital'))</title>
