@@ -33,17 +33,27 @@
                 <select name="target" id="targetSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                     <option value="test" {{ old('target', $broadcast->target ?? '') == 'test' ? 'selected' : '' }}>Tes Kirim (Ke Nomor Sendiri)</option>
                     <option value="donors" {{ old('target', $broadcast->target ?? '') == 'donors' ? 'selected' : '' }}>Semua Donatur</option>
+                    <option value="csv_audience" {{ old('target', $broadcast->target ?? '') == 'csv_audience' ? 'selected' : '' }}>Upload CSV / Excel (Jamaah)</option>
                 </select>
                 @error('target') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Test Number Input --}}
-            <div id="testNumberField" class="mb-6">
+            <div id="testNumberField" class="mb-6 hidden">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Nomor WhatsApp Tes</label>
                 <input type="text" name="test_number" value="{{ old('test_number', isset($broadcast->target_data['test_number']) ? $broadcast->target_data['test_number'] : '') }}"
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                        placeholder="08123456789">
                 @error('test_number') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            {{-- CSV Upload Input --}}
+            <div id="csvNumberField" class="mb-6 hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Upload File CSV</label>
+                <input type="file" name="csv_file" accept=".csv, .txt"
+                       class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary hover:file:bg-primary-100">
+                <p class="text-xs text-gray-400 mt-1">Format: File .csv atau .txt. Sistem akan otomatis mendeteksi nomor HP di dalamnya.</p>
+                @error('csv_file') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Image --}}
@@ -93,12 +103,16 @@
     <script>
         const targetSelect = document.getElementById('targetSelect');
         const testNumberField = document.getElementById('testNumberField');
+        const csvNumberField = document.getElementById('csvNumberField');
 
         function toggleTestField() {
+            testNumberField.style.display = 'none';
+            csvNumberField.style.display = 'none';
+
             if (targetSelect.value === 'test') {
                 testNumberField.style.display = 'block';
-            } else {
-                testNumberField.style.display = 'none';
+            } else if (targetSelect.value === 'csv_audience') {
+                csvNumberField.style.display = 'block';
             }
         }
 

@@ -119,6 +119,11 @@ class SendBroadcastJob implements ShouldQueue
             if (!empty($this->broadcast->target_data['test_number'])) {
                 $numbers[] = $this->broadcast->target_data['test_number'];
             }
+        } elseif ($target === 'csv_audience') {
+            // Ambil dari hasil parsing CSV yg disimpan di target_data
+            if (!empty($this->broadcast->target_data['csv_numbers'])) {
+                $numbers = $this->broadcast->target_data['csv_numbers'];
+            }
         }
         // Add other targets here (e.g. 'all', 'subscribers') if you have Users table with phones
 
