@@ -11,6 +11,7 @@ use App\Models\User;
 use Exception;
 use Http;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreDonationRequest;
 use Illuminate\Support\Facades\DB;
 use Log;
 use Midtrans\Config;
@@ -27,7 +28,7 @@ class DonasiController extends Controller
         Config::$is3ds = config('services.midtrans.is_3ds');
     }
 
-    public function store(Request $request, $programDonasiId)
+    public function store(StoreDonationRequest $request, $programDonasiId)
     {
         try {
             $programDonasi = ProgramDonasi::findOrFail($programDonasiId);
@@ -44,19 +45,22 @@ class DonasiController extends Controller
                     $userId = $exitingUser->id;
                 }
             }
+            
+            // ✅ Ambil data yang TERVALIDASI saja
+            $validated = $request->validated();
 
-            DB::transaction(function () use ($request, $programDonasi, &$snapToken, &$donation, $userId) {
+            DB::transaction(function () use ($validated, $programDonasi, &$snapToken, &$donation, $userId) {
                 // 1. CREATE DONATION
                 $timestamp = now();
                 $donation = Donation::create([
                     'donation_code' => 'DON-' . date('YmdHis') . '-' . rand(1000, 9999),
                     'program_donasi_id' => $programDonasi->id,
-                    'donor_name' => $request->donor_name,
-                    'donor_phone' => $request->donor_phone,
-                    'donor_email' => $request->donor_email,
-                    'donation_type' => $request->donation_type,
-                    'amount' => $request->amount,
-                    'note' => $request->note,
+                    'donor_name' => $validated['donor_name'],
+                    'donor_phone' => $validated['donor_phone'],
+                    'donor_email' => $validated['donor_email'],
+                    'donation_type' => $validated['donation_type'],
+                    'amount' => $validated['amount'],
+                    'note' => $validated['note'] ?? null,
                     'status' => 'unpaid',
                     'user_id' => $userId,
                     'expires_at' => $timestamp->copy()->addHours(24),

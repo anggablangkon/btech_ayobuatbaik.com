@@ -60,16 +60,9 @@ class SendBroadcastJob implements ShouldQueue
             }
 
             foreach ($chunks as $chunk) {
-                // Normalize numbers: 08xxx -> 628xxx
+                // Normalize numbers using Fonnte helper
                 $normalizedChunk = array_map(function($number) {
-                    $number = trim($number);
-                    if (str_starts_with($number, '0')) {
-                        return '62' . substr($number, 1);
-                    }
-                    if (str_starts_with($number, '+62')) {
-                        return substr($number, 1);
-                    }
-                    return $number;
+                    return Fonnte::normalize($number);
                 }, $chunk);
                 
                 $targetString = implode(',', $normalizedChunk);

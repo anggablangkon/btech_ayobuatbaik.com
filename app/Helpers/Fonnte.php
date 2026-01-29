@@ -4,23 +4,16 @@ namespace App\Helpers;
 
 class Fonnte
 {
+    /**
+     * Send WhatsApp message via Fonnte
+     */
     public static function send($target, $message, $url = null)
     {
-        // Normalisasi Nomor HP
-        // Hapus karakter selain angka
-        $target = preg_replace('/[^0-9]/', '', $target);
+        // 1. Normalisasi Nomor (Panggil method local)
+        $target = self::normalize($target);
 
-        // Ubah 08... jadi 628...
-        if (substr($target, 0, 2) === '08') {
-            $target = '62' . substr($target, 1);
-        }
-        // Ubah 8... jadi 628... (jika user input tanpa 0 atau 62)
-        elseif (substr($target, 0, 1) === '8') {
-            $target = '62' . $target;
-        }
-        // Jika sudah 628... biarkan saja.
-
-        $token = env("FONNTE_API_KEY");
+        // 2. Ambil token dari Config (Aman dicache)
+        $token = config('services.fonnte.token');
 
         $curl = curl_init();
 
@@ -51,5 +44,27 @@ class Fonnte
         }
 
         return $response;
+    }
+
+    /**
+     * Pusat normalisasi nomor HP +62
+     */
+    public static function normalize($target)
+    {
+        $target = trim($target);
+        
+        // hapus karakter selain angka
+        $target = preg_replace('/[^0-9]/', '', $target);
+
+        // ubah 08 jadi 628
+        if (substr($target, 0, 2) === '08') {
+            return '62' . substr($target, 1);
+        }
+        // ubah 8 jadi 628
+        elseif (substr($target, 0, 1) === '8') {
+            return '62' . $target;
+        }
+
+        return $target;
     }
 }
