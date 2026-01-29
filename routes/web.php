@@ -62,7 +62,7 @@ Route::middleware(["auth"])->group(function () {
 });
 
 // Admin Routes dengan middleware
-Route::middleware(["auth"])
+Route::middleware(["auth", "isAdmin"])
     ->prefix("admin")
     ->name("admin.")
     ->group(function () {
