@@ -269,8 +269,8 @@ Semoga Allah membalas semua kebaikan Anda. Aamiin 🤲";
 
     private function sendMetaPixelEvent($eventName, $customData, $donation, $eventId = null)
     {
-        $pixelId = env('META_PIXEL_ID');
-        $accessToken = env('META_PIXEL_ACCESS_TOKEN');
+        $pixelId = config('services.meta.pixel_id');
+        $accessToken = config('services.meta.access_token');
 
         if (!$accessToken) {
             Log::warning('Meta Pixel Access Token not configured');
@@ -278,16 +278,43 @@ Semoga Allah membalas semua kebaikan Anda. Aamiin 🤲";
         }
 
         try {
+            // 📊 Build user_data with enhanced parameters for better Event Match Quality
+            $userData = [
+                // Core parameters (already sending 100%)
+                'em' => hash('sha256', strtolower(trim($donation->donor_email ?? ''))),
+                'ph' => hash('sha256', preg_replace('/[^0-9]/', '', $donation->donor_phone)),
+                'client_user_agent' => request()->header('User-Agent'),
+                'client_ip_address' => request()->ip(),
+            ];
+
+            // 🔥 NEW: Add fbc (Click ID) from cookie - +22% potential increase
+            $fbc = request()->cookie('_fbc');
+            if ($fbc) {
+                $userData['fbc'] = $fbc;
+            }
+
+            // 🔥 NEW: Add fbp (Browser ID) from cookie - +18% potential increase
+            $fbp = request()->cookie('_fbp');
+            if ($fbp) {
+                $userData['fbp'] = $fbp;
+            }
+
+            // 🔥 NEW: Add external_id (User ID) - +18% potential increase
+            if ($donation->user_id) {
+                $userData['external_id'] = hash('sha256', (string) $donation->user_id);
+            }
+
+            // 🔥 NEW: Add first name if available - +11% potential increase
+            $nameParts = explode(' ', $donation->donor_name ?? '');
+            if (!empty($nameParts[0])) {
+                $userData['fn'] = hash('sha256', strtolower(trim($nameParts[0])));
+            }
+
             $eventData = [
                 'event_name' => $eventName,
                 'event_time' => time(),
                 'action_source' => 'website',
-                'user_data' => [
-                    'em' => hash('sha256', strtolower(trim($donation->donor_email ?? ''))),
-                    'ph' => hash('sha256', preg_replace('/[^0-9]/', '', $donation->donor_phone)),
-                    'client_user_agent' => request()->header('User-Agent'),
-                    'client_ip_address' => request()->ip(),
-                ],
+                'user_data' => $userData,
                 'custom_data' => $customData,
                 'event_source_url' => url()->current(),
             ];
@@ -303,7 +330,7 @@ Semoga Allah membalas semua kebaikan Anda. Aamiin 🤲";
             ]);
 
             if ($response->successful()) {
-                Log::debug("Meta Pixel: {$eventName} sent");
+                Log::debug("Meta Pixel: {$eventName} sent", ['emq_params' => array_keys($userData)]);
             } else {
                 Log::warning("Meta Pixel: {$eventName} failed", ['status' => $response->status()]);
             }
