@@ -75,6 +75,7 @@
                                 <th class="px-4 py-3 text-left">Terkumpul</th>
                                 {{-- GABUNGKAN DIBUAT DAN BERAKHIR JADI PERIODE --}}
                                 <th class="px-4 py-3 text-left">Periode</th>
+                                <th class="px-4 py-3 text-center">Views</th>
                                 <th class="px-4 py-3 text-left">Status</th>
                                 <th class="px-4 py-3 text-left">Verified</th>
                                 <th class="px-4 py-3 text-right">Aksi</th>
@@ -114,6 +115,14 @@
                                     <td class="px-4 py-3 text-xs text-gray-700 whitespace-nowrap">
                                         {{ optional($program->created_at)->format('d/m/Y') }} s/d <br>
                                         {{ $program->end_date ? \Carbon\Carbon::parse($program->end_date)->format('d/m/Y') : '—' }}
+                                    </td>
+
+                                    {{-- VIEW COUNT --}}
+                                    <td class="px-4 py-3 text-center">
+                                        <span class="inline-flex items-center gap-1 text-xs text-gray-600" title="Jumlah Tayangan">
+                                            <i class="fas fa-eye text-gray-400"></i>
+                                            {{ number_format($program->view_count ?? 0) }}
+                                        </span>
                                     </td>
 
                                     <td class="px-4 py-3">
@@ -159,7 +168,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-6 text-gray-500">Belum ada program donasi.
+                                    <td colspan="8" class="text-center py-6 text-gray-500">Belum ada program donasi.
                                     </td>
                                 </tr>
                             @endforelse
@@ -209,6 +218,9 @@
                                         @if ($program->verified)
                                             <span class="text-blue-600 text-xs">Terverifikasi</span>
                                         @endif
+                                        <span class="text-gray-400 text-xs" title="Jumlah Tayangan">
+                                            <i class="fas fa-eye"></i> {{ number_format($program->view_count ?? 0) }}
+                                        </span>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         {{-- Ganti Edit ke Detail/Show --}}

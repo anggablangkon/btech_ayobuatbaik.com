@@ -86,6 +86,14 @@ class HomeController extends Controller
     public function program($slug)
     {
         $program = ProgramDonasi::where("slug", $slug)->firstOrFail();
+
+        // 📊 Increment view count (unique per session)
+        $sessionKey = "viewed_program_{$program->id}";
+        if (!session()->has($sessionKey)) {
+            $program->increment('view_count');
+            session([$sessionKey => true]);
+        }
+
         // 1. Ambil daftar donasi sukses (maksimal 20 atau lebih, disarankan dibatasi)
         // Diurutkan berdasarkan yang terbaru (created_at atau status_change_at)
         $donations = Donation::where("program_donasi_id", $program->id)
