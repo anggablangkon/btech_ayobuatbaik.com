@@ -111,6 +111,7 @@
                             <th class="px-3 py-2 text-left">Program</th>
                             <th class="px-3 py-2 text-right">Nominal</th>
                             <th class="px-3 py-2 text-center">Status</th>
+                            <th class="px-3 py-2 text-center">Sumber</th>
                             <th class="px-3 py-2 text-left">Waktu Donasi</th>
                         </tr>
                     </thead>
@@ -141,6 +142,15 @@
                                         {{ ucfirst($donation->status) }}
                                     </span>
                                 </td>
+                                <td class="px-3 py-2 text-center whitespace-nowrap">
+                                    @if($donation->utm_source)
+                                        <span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full font-medium" title="{{ $donation->utm_medium }} / {{ $donation->utm_campaign }}">
+                                            {{ $donation->utm_source }}
+                                        </span>
+                                    @else
+                                        <span class="text-gray-400">-</span>
+                                    @endif
+                                </td>
                                 <td class="px-3 py-2 text-xs text-gray-500 whitespace-nowrap">
                                     <div class="flex items-center justify-between gap-3">
                                         <span>{{ $donation->created_at->format('d M Y H:i') }}</span>
@@ -152,7 +162,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-6 text-gray-500">Belum ada data donasi yang
+                                <td colspan="7" class="text-center py-6 text-gray-500">Belum ada data donasi yang
                                     tercatat.</td>
                             </tr>
                         @endforelse
@@ -196,8 +206,13 @@
                         </p>
                     </div>
 
-                    <div class="text-xs text-gray-500 text-right mt-1">
-                        Donasi pada: {{ $donation->created_at->format('d M Y H:i') }}
+                    <div class="flex justify-between items-center text-xs text-gray-500 mt-1 pt-2 border-t">
+                        <span>{{ $donation->created_at->format('d M Y H:i') }}</span>
+                        @if($donation->utm_source)
+                            <span class="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full font-medium">
+                                <i class="fas fa-chart-line mr-1"></i>{{ $donation->utm_source }}
+                            </span>
+                        @endif
                     </div>
                 </div>
             @empty
