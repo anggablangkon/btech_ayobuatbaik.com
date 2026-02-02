@@ -18,7 +18,7 @@
                 </div>
             <div>
                     <p class="text-xs text-gray-500 font-medium uppercase">Total Dilihat</p>
-                    <p class="text-xl font-bold text-gray-900">{{ number_format($program->views ?? 0, 0, ',', '.') }}</p>
+                    <p class="text-xl font-bold text-gray-900">{{ number_format($program->view_count ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>
 
