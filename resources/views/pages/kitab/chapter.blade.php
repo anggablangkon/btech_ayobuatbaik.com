@@ -127,6 +127,34 @@
                         <p class="text-xs text-gray-400">Maqolah untuk bab ini belum tersedia.</p>
                     </div>
                 @endforelse
+
+                {{-- 🤲 Donation CTA Banner - Soft Approach --}}
+                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-100 p-5 mt-6 relative overflow-hidden">
+                    {{-- Decorative Pattern --}}
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-200/30 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                    <div class="absolute bottom-0 left-0 w-16 h-16 bg-teal-200/30 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-hands-praying text-emerald-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-sm font-bold text-gray-800 mb-1">Dukung Dakwah Digital</h3>
+                                <p class="text-xs text-gray-600 leading-relaxed mb-3">
+                                    Bantu kami terus menerjemahkan dan menyebarkan ilmu kitab kuning secara gratis. 
+                                    <span class="text-emerald-700 font-medium">Sedekah ilmu, pahalanya terus mengalir.</span>
+                                </p>
+                                <a href="{{ route('home.program') }}" 
+                                   class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-all shadow-sm shadow-emerald-200"
+                                   onclick="fbq('track', 'InitiateCheckout', { content_name: 'Kitab {{ $kitab->name }}', content_category: 'Donation CTA from Kitab' });">
+                                    <i class="fas fa-heart"></i>
+                                    <span>Dukung Kajian Ini</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
