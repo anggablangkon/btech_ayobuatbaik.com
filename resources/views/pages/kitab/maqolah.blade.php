@@ -67,16 +67,16 @@
                                 <i class="fas fa-hands-praying text-emerald-600"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="text-sm font-bold text-gray-800 mb-1">Ilmu Ini Bermanfaat?</h3>
+                                <h3 class="text-sm font-bold text-gray-800 mb-1">Ingin Berbagi Kebaikan?</h3>
                                 <p class="text-xs text-gray-600 leading-relaxed mb-3">
-                                    Jadikan pahala jariyah dengan mendukung penerjemahan dan penyebaran kitab ini. 
-                                    <span class="text-emerald-700 font-medium">Sedekah ilmu, pahalanya terus mengalir.</span>
+                                    Dukung program-program sosial dan dakwah kami. 
+                                    <span class="text-emerald-700 font-medium">Setiap donasi adalah investasi akhirat.</span>
                                 </p>
                                 <a href="{{ route('home.program') }}" 
                                    class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-all shadow-sm shadow-emerald-200"
                                    onclick="fbq('track', 'InitiateCheckout', { content_name: 'Kitab {{ $kitab->name }}', content_category: 'Donation CTA from Kitab' });">
                                     <i class="fas fa-heart"></i>
-                                    <span>Dukung Kajian Ini</span>
+                                    <span>Lihat Program Donasi</span>
                                 </a>
                             </div>
                         </div>
