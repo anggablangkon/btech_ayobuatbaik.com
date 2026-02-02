@@ -26,6 +26,10 @@ class Donation extends Model
         "followup_sent_at",
         "snap_token",
         "expires_at",
+        // UTM Tracking
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
     ];
 
     protected $casts = [

@@ -13,6 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
+        
+        // Append UTM capture middleware to web group
+        $middleware->web(append: [
+            \App\Http\Middleware\CaptureUtmParameters::class,
+        ]);
+        
         $middleware->alias([
             'isAdmin' => \App\Http\Middleware\IsAdmin::class,
         ]);

@@ -72,7 +72,7 @@
                                     Dukung program-program sosial dan dakwah kami. 
                                     <span class="text-emerald-700 font-medium">Setiap donasi adalah investasi akhirat.</span>
                                 </p>
-                                <a href="{{ route('home.program') }}" 
+                                <a href="{{ route('home.program') }}?utm_source=kitab&utm_medium=cta_banner&utm_campaign={{ Str::slug($kitab->name) }}" 
                                    class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-all shadow-sm shadow-emerald-200"
                                    onclick="fbq('track', 'InitiateCheckout', { content_name: 'Kitab {{ $kitab->name }}', content_category: 'Donation CTA from Kitab' });">
                                     <i class="fas fa-heart"></i>

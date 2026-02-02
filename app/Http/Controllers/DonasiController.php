@@ -64,6 +64,10 @@ class DonasiController extends Controller
                     'status' => 'unpaid',
                     'user_id' => $userId,
                     'expires_at' => $timestamp->copy()->addHours(24),
+                    // 📊 UTM Tracking - Ambil dari session
+                    'utm_source' => session('utm_source'),
+                    'utm_medium' => session('utm_medium'),
+                    'utm_campaign' => session('utm_campaign'),
                 ]);
 
                 // 2. MIDTRANS PAYLOAD

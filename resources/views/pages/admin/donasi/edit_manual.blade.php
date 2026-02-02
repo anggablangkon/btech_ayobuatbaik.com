@@ -89,6 +89,29 @@
             </div>
         </div>
 
+        {{-- UTM Tracking Info (Read-Only) --}}
+        @if($donation->utm_source || $donation->utm_medium || $donation->utm_campaign)
+        <div class="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+            <h3 class="font-semibold text-blue-800 text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
+                <i class="fas fa-chart-line"></i> Sumber Traffic (UTM)
+            </h3>
+            <div class="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                    <span class="text-blue-600 font-medium block text-xs">Source</span>
+                    <span class="text-gray-800 font-semibold">{{ $donation->utm_source ?? '-' }}</span>
+                </div>
+                <div>
+                    <span class="text-blue-600 font-medium block text-xs">Medium</span>
+                    <span class="text-gray-800 font-semibold">{{ $donation->utm_medium ?? '-' }}</span>
+                </div>
+                <div>
+                    <span class="text-blue-600 font-medium block text-xs">Campaign</span>
+                    <span class="text-gray-800 font-semibold">{{ $donation->utm_campaign ?? '-' }}</span>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <div class="mt-8 flex justify-end gap-3 pt-6 border-t">
             <a href="{{ route('admin.donasi.index') }}" class="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 font-semibold transition">
                 Batal
