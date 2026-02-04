@@ -13,7 +13,7 @@ class Fonnte
         $target = self::normalize($target);
 
         // 2. Ambil token dari Config (Aman dicache)
-        $token = config('services.fonnte.token');
+        $token = config('services.fonnte.token') ?? env('FONNTE_API_KEY');
 
         $curl = curl_init();
 
