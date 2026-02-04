@@ -78,7 +78,7 @@ class DonasiController extends Controller
                     ],
                     'customer_details' => [
                         'first_name' => $donation->donor_name,
-                        'email' => $donation->donor_email,
+                        'email' => $donation->donor_email ?: ($donation->donor_phone . '@guest.ayobuatbaik.com'),
                         'phone' => $donation->donor_phone,
                     ],
                     'item_details' => [
