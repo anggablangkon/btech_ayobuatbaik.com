@@ -15,6 +15,11 @@ class Fonnte
         // 2. Ambil token dari Config (Aman dicache)
         $token = config('services.fonnte.token');
 
+        if (!$token) {
+            \Log::error('Fonnte: Token not configured');
+            return json_encode(['status' => false, 'reason' => 'Token not configured']);
+        }
+
         $curl = curl_init();
 
         $postFields = [

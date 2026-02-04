@@ -60,12 +60,8 @@ class SendBroadcastJob implements ShouldQueue
             }
 
             foreach ($chunks as $chunk) {
-                // Normalize numbers using Fonnte helper
-                $normalizedChunk = array_map(function($number) {
-                    return Fonnte::normalize($number);
-                }, $chunk);
-                
-                $targetString = implode(',', $normalizedChunk);
+                // Fonnte::send() sudah normalize nomor di dalamnya
+                $targetString = implode(',', $chunk);
                 
                 try {
                     $response = Fonnte::send($targetString, $this->broadcast->message, $imageUrl);

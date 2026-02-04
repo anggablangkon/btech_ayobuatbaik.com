@@ -163,6 +163,7 @@ class DonasiController extends Controller
             $donation = Donation::with('program')
                 ->where('donation_code', $orderId)
                 ->orWhere('donation_code', 'LIKE', $originalOrderId . '%')
+                ->lockForUpdate()
                 ->firstOrFail();
 
             if ($donation->status === $status) {
@@ -285,7 +286,9 @@ Semoga Allah membalas semua kebaikan Anda. Aamiin 🤲";
             // 📊 Build user_data with enhanced parameters for better Event Match Quality
             $userData = [
                 // Core parameters (already sending 100%)
-                'em' => hash('sha256', strtolower(trim($donation->donor_email ?? ''))),
+                'em' => $donation->donor_email 
+                    ? hash('sha256', strtolower(trim($donation->donor_email))) 
+                    : null,
                 'ph' => hash('sha256', preg_replace('/[^0-9]/', '', $donation->donor_phone)),
                 'client_user_agent' => request()->header('User-Agent'),
                 'client_ip_address' => request()->ip(),

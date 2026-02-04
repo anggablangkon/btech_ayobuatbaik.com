@@ -15,6 +15,7 @@ class SendPendingReminders extends Command
     public function handle()
     {
         $now = now();
+        $isDryRun = $this->option('dry-run');
 
         $pendingDonations = Donation::where("status", "pending")
             ->where("created_at", ">=", $now->copy()->subHours(24))
@@ -24,6 +25,23 @@ class SendPendingReminders extends Command
 
         if ($pendingDonations->isEmpty()) {
             $this->info("[" . now()->format('Y-m-d H:i') . "] Reminders - Sent: 0, Failed: 0 (No pending donations)");
+            return 0;
+        }
+
+        if ($isDryRun) {
+            $this->info("=== DRY RUN MODE ===");
+            $this->info("Donasi pending yang akan dikirimi reminder:");
+            $this->newLine();
+
+            foreach ($pendingDonations as $donation) {
+                $this->line("📱 {$donation->donor_phone} - {$donation->donor_name}");
+                $this->line("   Program: {$donation->program->title}");
+                $this->line("   Nominal: Rp " . number_format($donation->amount, 0, ',', '.'));
+                $this->line("   Dibuat: {$donation->created_at}");
+                $this->newLine();
+            }
+
+            $this->info("Total: {$pendingDonations->count()} donasi");
             return 0;
         }
 

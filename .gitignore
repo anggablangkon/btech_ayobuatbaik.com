@@ -21,6 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-/config/services.php
+# /config/services.php
 .htaccess
 /resources/views/templates

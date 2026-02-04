@@ -15,7 +15,7 @@ class SendDonationFollowup extends Command
 
     public function handle()
     {
-        $days = (int) env('DONATION_FOLLOWUP_DAYS', 3);
+        $days = (int) config('services.donation.followup_days', 3);
         $now = now();
         $isDryRun = $this->option('dry-run');
 
