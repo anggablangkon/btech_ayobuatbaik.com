@@ -42,9 +42,6 @@ class HomeController extends Controller
         $berita = Cache::remember("berita_latest_4", 3600, function () {
             return Berita::orderBy("tanggal", "desc")->take(4)->get();
         });
-        $berita = Cache::remember("berita_latest_4", 3600, function () {
-            return Berita::orderBy("tanggal", "desc")->take(4)->get();
-        });
 
         $prayers = Cache::remember('latest_prayers', 3600, function () {
             return Donation::where('status', 'success')

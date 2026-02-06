@@ -12,17 +12,6 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        // Hitung total program
-        $total_programs = ProgramDonasi::count();
-
-        // Jumlahkan semua collected_amount
-        $total_amount = ProgramDonasi::sum("collected_amount");
-
-        $total_donations = Donation::where("status", "success")->count();
-
-        // Hitung total user
-        // $total_users = User::count();
-
         $stats = Cache::remember("dashboard_stats", 300, function () {
             return [
                 "total_programs" => ProgramDonasi::count(),
@@ -254,10 +243,10 @@ class AdminController extends Controller
             $handle = fopen("php://output", "w");
 
             // Tambahkan BOM untuk fix karakter aneh di Excel Windows
-            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+            fprintf($handle, chr(0xef) . chr(0xbb) . chr(0xbf));
 
             // Gunakan SEMICOLON (;) sebagai separator agar otomatis rapi di Excel Indonesia/Eropa
-            $separator = ';';
+            $separator = ";";
 
             // Header CSV
             fputcsv($handle, ["No", "Kode Donasi", "Tanggal", "Nama Donatur", "Telepon", "Email", "Program", "Nominal", "Status", "Catatan"], $separator);
@@ -285,20 +274,24 @@ class AdminController extends Controller
             $query->chunk(500, function ($donations) use ($handle, $separator) {
                 foreach ($donations as $index => $donation) {
                     // Normalisasi HP biar kebaca teks di excel
-                    $phone = preg_replace('/[^0-9]/', '', $donation->donor_phone);
+                    $phone = preg_replace("/[^0-9]/", "", $donation->donor_phone);
 
-                    fputcsv($handle, [
-                        $donation->id,
-                        $donation->donation_code,
-                        $donation->created_at->format("Y-m-d H:i:s"),
-                        $donation->donor_name,
-                        "'" . $phone, // Kasih kutip biar excel ga auto format jadi scientific
-                        $donation->donor_email,
-                        $donation->program ? $donation->program->title : "Program Dihapus",
-                        $donation->amount,
-                        $donation->status,
-                        $donation->note,
-                    ], $separator);
+                    fputcsv(
+                        $handle,
+                        [
+                            $donation->id,
+                            $donation->donation_code,
+                            $donation->created_at->format("Y-m-d H:i:s"),
+                            $donation->donor_name,
+                            "'" . $phone, // Kasih kutip biar excel ga auto format jadi scientific
+                            $donation->donor_email,
+                            $donation->program ? $donation->program->title : "Program Dihapus",
+                            $donation->amount,
+                            $donation->status,
+                            $donation->note,
+                        ],
+                        $separator,
+                    );
                 }
             });
 
@@ -312,55 +305,55 @@ class AdminController extends Controller
             $handle = fopen("php://output", "w");
 
             // Tambahkan BOM untuk fix karakter aneh di Excel Windows
-            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+            fprintf($handle, chr(0xef) . chr(0xbb) . chr(0xbf));
 
             // Gunakan SEMICOLON (;) sebagai separator agar otomatis rapi di Excel Indonesia/Eropa
-            $separator = ';';
+            $separator = ";";
 
             // Header CSV
             fputcsv($handle, ["No", "Nama Donatur", "Telepon", "Email", "Total Donasi (Rp)", "Frekuensi Donasi", "Terakhir Donasi"], $separator);
 
             // Ambil semua donasi sukses, urutkan dari yang TERBARU
             // PENTING: Order Descending penting untuk logika pemilihan nama
-            $donations = Donation::where('status', 'success')
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $donations = Donation::where("status", "success")->orderBy("created_at", "desc")->get();
 
             $uniqueDonors = [];
 
             foreach ($donations as $donation) {
                 // Normalisasi HP
-                $phone = preg_replace('/[^0-9]/', '', $donation->donor_phone);
-                
+                $phone = preg_replace("/[^0-9]/", "", $donation->donor_phone);
+
                 // Kunci Unik: HP (Prioritas) > Email
                 $key = !empty($phone) ? $phone : $donation->donor_email;
 
-                if (empty($key)) continue;
+                if (empty($key)) {
+                    continue;
+                }
 
                 if (!isset($uniqueDonors[$key])) {
                     // Init Data Baru
                     $uniqueDonors[$key] = [
-                        'final_name' => $donation->donor_name, // Default: nama dari transaksi terbaru
-                        'phone' => $donation->donor_phone,
-                        'email' => $donation->donor_email,
-                        'total_amount' => 0,
-                        'frequency' => 0,
-                        'last_donation' => $donation->created_at->format('Y-m-d H:i:s'),
-                        'has_real_name' => false // Flag penanda apakah sudah ketemu nama asli
+                        "final_name" => $donation->donor_name, // Default: nama dari transaksi terbaru
+                        "phone" => $donation->donor_phone,
+                        "email" => $donation->donor_email,
+                        "total_amount" => 0,
+                        "frequency" => 0,
+                        "last_donation" => $donation->created_at->format("Y-m-d H:i:s"),
+                        "has_real_name" => false, // Flag penanda apakah sudah ketemu nama asli
                     ];
                 }
 
                 // --- LOGIKA SMART NAME (NAMA ASLI) ---
                 // Cek apakah nama transaksi ini "Hamba Allah" atau bukan (Case Insensitive)
-                $isHambaAllah = preg_match('/hamba\s*allah/i', $donation->donor_name) || empty($donation->donor_name) || $donation->donor_name == '-';
+                $isHambaAllah = preg_match("/hamba\s*allah/i", $donation->donor_name) || empty($donation->donor_name) || $donation->donor_name == "-";
 
                 // Jika nama yang sekarang BUKAN Hamba Allah
                 if (!$isHambaAllah) {
                     // Dan jika kita BELUM pernah nemu nama asli sebelumnya untuk orang ini
-                    if (!$uniqueDonors[$key]['has_real_name']) {
+                    if (!$uniqueDonors[$key]["has_real_name"]) {
                         // Kita update namanya jadi nama asli ini
-                        $uniqueDonors[$key]['final_name'] = $donation->donor_name;
-                        $uniqueDonors[$key]['has_real_name'] = true; 
+                        $uniqueDonors[$key]["final_name"] = $donation->donor_name;
+                        $uniqueDonors[$key]["has_real_name"] = true;
                         // Note: Karena sort DESC, nama asli yang pertama ketemu pasti yang PALING BARU.
                         // Jika ada nama asli lagi di transaksi lama (di bawah), kita abaikan karena sudah marked true.
                     }
@@ -368,28 +361,32 @@ class AdminController extends Controller
 
                 // --- LOGIKA SMART EMAIL (BACKFILL EMAIL) ---
                 // Jika email di data gabungan masih kosong, TAPI di transaksi ini ada emailnya, ambil email ini!
-                if (empty($uniqueDonors[$key]['email']) && !empty($donation->donor_email)) {
-                    $uniqueDonors[$key]['email'] = $donation->donor_email;
+                if (empty($uniqueDonors[$key]["email"]) && !empty($donation->donor_email)) {
+                    $uniqueDonors[$key]["email"] = $donation->donor_email;
                 }
 
                 // Agregasi Angka
-                $uniqueDonors[$key]['total_amount'] += $donation->amount;
-                $uniqueDonors[$key]['frequency']++;
+                $uniqueDonors[$key]["total_amount"] += $donation->amount;
+                $uniqueDonors[$key]["frequency"]++;
             }
 
             // Tulis baris CSV
             $no = 1;
             foreach ($uniqueDonors as $donor) {
-                fputcsv($handle, [
-                    $no++,
-                    $donor['final_name'],
-                    // Pakai tanda kutip satu di depan agar Excel membaca sebagai Teks, bukan Angka Ilmiah (E+)
-                    "'" . preg_replace('/[^0-9]/', '', $donor['phone']), 
-                    $donor['email'],
-                    $donor['total_amount'],
-                    $donor['frequency'],
-                    $donor['last_donation'],
-                ], $separator);
+                fputcsv(
+                    $handle,
+                    [
+                        $no++,
+                        $donor["final_name"],
+                        // Pakai tanda kutip satu di depan agar Excel membaca sebagai Teks, bukan Angka Ilmiah (E+)
+                        "'" . preg_replace("/[^0-9]/", "", $donor["phone"]),
+                        $donor["email"],
+                        $donor["total_amount"],
+                        $donor["frequency"],
+                        $donor["last_donation"],
+                    ],
+                    $separator,
+                );
             }
 
             fclose($handle);

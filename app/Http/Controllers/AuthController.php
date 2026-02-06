@@ -19,12 +19,23 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        // Rate limiting: max 5 attempts per minute per IP
+        $key = 'login:' . $request->ip();
+        
+        if (\RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = \RateLimiter::availableIn($key);
+            return back()
+                ->withErrors(['email' => "Terlalu banyak percobaan login. Coba lagi dalam {$seconds} detik."])
+                ->onlyInput('email');
+        }
+
         $credentials = $request->validate([
             "email" => "required|email",
-            "password" => "required:min:6",
+            "password" => "required|min:6",
         ]);
 
         if (Auth::attempt($credentials)) {
+            \RateLimiter::clear($key); // Reset counter on successful login
             $request->session()->regenerate();
 
             // Redirect based on user role
@@ -34,6 +45,8 @@ class AuthController extends Controller
 
             return redirect()->intended(route("profile"));
         }
+
+        \RateLimiter::hit($key, 60); // Increment counter, 60 second decay
 
         return back()
             ->withErrors([
