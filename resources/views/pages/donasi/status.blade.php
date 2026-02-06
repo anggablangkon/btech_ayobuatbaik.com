@@ -47,14 +47,19 @@
             {{-- META PIXEL EVENTS --}}
             @if ($donation->status === 'success')
                 <script>
-                    fbq('track', 'Donate', {
-                        value: {{ $donation->amount }},
-                        currency: 'IDR',
-                        content_name: '{{ $donation->program->title }}',
-                        content_category: 'Donasi',
-                        content_ids: ['{{ $donation->program->id }}'],
-                        content_type: 'product'
-                    }, { eventID: '{{ $donation->donation_code }}' });
+                    // Prevent duplicate events on page refresh
+                    const donateEventKey = 'donate_tracked_{{ $donation->donation_code }}';
+                    if (!sessionStorage.getItem(donateEventKey)) {
+                        fbq('track', 'Donate', {
+                            value: {{ $donation->amount }},
+                            currency: 'IDR',
+                            content_name: '{{ $donation->program->title }}',
+                            content_category: 'Donasi',
+                            content_ids: ['{{ $donation->program->id }}'],
+                            content_type: 'product'
+                        }, { eventID: '{{ $donation->donation_code }}' });
+                        sessionStorage.setItem(donateEventKey, 'true');
+                    }
                 </script>
             @endif
 
