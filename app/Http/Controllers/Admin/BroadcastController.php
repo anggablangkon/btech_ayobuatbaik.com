@@ -120,4 +120,18 @@ class BroadcastController extends Controller
         return redirect()->route('admin.broadcast.index')
             ->with('success', 'Broadcast sedang diproses di latar belakang.');
     }
+
+    public function destroy(Broadcast $broadcast)
+    {
+        // Hapus gambar jika ada
+        if ($broadcast->image_path) {
+            $imagePath = str_replace('storage/', '', $broadcast->image_path);
+            Storage::disk('public')->delete($imagePath);
+        }
+
+        $broadcast->delete();
+
+        return redirect()->route('admin.broadcast.index')
+            ->with('success', 'Broadcast berhasil dihapus.');
+    }
 }
