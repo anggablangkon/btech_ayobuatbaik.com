@@ -48,9 +48,9 @@
                                 </div>
                                 <div class="mt-1">
                                     <div class="flex justify-between text-xs text-gray-800 mb-0.5">
-                                        <span class="font-semibold text-[10px]">Terkumpul: Rp
+                                        <span class="font-semibold text-[11px]">Terkumpul: Rp
                                             {{ number_format($programPilihan->collected_amount, 0, ',', '.') }}</span>
-                                        <span class="text-gray-500 text-[10px]">
+                                        <span class="text-gray-500 text-[11px]">
                                             Sisa:
                                             {{ $programPilihan->end_date
                                                 ? floor(max(0, \Carbon\Carbon::now()->diffInDays($programPilihan->end_date, false))) . ' hari'
@@ -170,10 +170,10 @@
 
                             <div class="mt-1">
                                 <div class="flex justify-between text-xs text-gray-800 mb-0.5">
-                                    <span class="font-semibold text-[10px]">
+                                    <span class="font-semibold text-[11px]">
                                         Terkumpul: Rp {{ number_format($terkumpul, 0, ',', '.') }}
                                     </span>
-                                    <span class="text-gray-500 text-[10px]">
+                                    <span class="text-gray-500 text-[11px]">
                                         Sisa hari: {{ $sisaHari }}
                                     </span>
                                 </div>
@@ -244,7 +244,7 @@
                 </h2>
                 <div class="flex items-center justify-between">
                     <p class="text-xs text-gray-300">Pesan kebaikan dari para donatur</p>
-                    <p class="text-[10px] text-secondary/80 flex items-center gap-1">
+                    <p class="text-[11px] text-secondary/80 flex items-center gap-1">
                         <i class="fas fa-hand-pointer"></i>
                         <span>Geser untuk melihat lebih banyak</span>
                     </p>
@@ -260,7 +260,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <h3 class="text-sm font-bold text-gray-800 leading-tight">{{ $prayer->donor_name ?: 'Hamba Allah' }}</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">{{ \Carbon\Carbon::setLocale('id') && false ?: $prayer->created_at->diffForHumans() }}</p>
+                            <p class="text-[11px] text-gray-500 mt-0.5">{{ \Carbon\Carbon::setLocale('id') && false ?: $prayer->created_at->diffForHumans() }}</p>
                         </div>
                     </header>
                     
@@ -271,7 +271,7 @@
                     </blockquote>
                     
                     <footer class="mt-3 pt-3 border-t border-gray-100">
-                        <p class="text-[10px] text-gray-500">
+                        <p class="text-[11px] text-gray-500">
                             <span class="font-medium text-gray-700 truncate inline-block max-w-[200px] align-bottom">{{ Str::limit($prayer->program->title, 32) ?? 'Program' }}</span>
                         </p>
                     </footer>

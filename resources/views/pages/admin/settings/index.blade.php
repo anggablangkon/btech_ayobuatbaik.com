@@ -152,10 +152,10 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">Warna Sekunder (Secondary)</label>
                         <div class="flex items-center gap-3">
                             <input type="color" name="theme_secondary" id="input_theme_secondary"
-                                   value="{{ $settings['theme_secondary'] ?? '#daaf65' }}"
+                                   value="{{ $settings['theme_secondary'] ?? '#8a6d3b' }}"
                                    class="h-10 w-16 p-1 border border-gray-300 rounded cursor-pointer"
                                    oninput="document.getElementById('text_theme_secondary').value = this.value">
-                             <input type="text" id="text_theme_secondary" value="{{ $settings['theme_secondary'] ?? '#daaf65' }}" 
+                             <input type="text" id="text_theme_secondary" value="{{ $settings['theme_secondary'] ?? '#8a6d3b' }}" 
                                     class="w-24 text-sm p-2 bg-white rounded border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent"
                                     placeholder="#000000"
                                     oninput="let v=this.value; if(!v.startsWith('#')) v='#'+v; if(/^#[0-9A-F]{6}$/i.test(v)) document.getElementById('input_theme_secondary').value = v;">
