@@ -118,7 +118,12 @@ class AdminController extends Controller
             "donor_name" => $validated["donor_name"],
             "donor_phone" => $validated["donor_phone"],
             "donor_email" => $validated["donor_email"],
+            "payment_type" => "manual_entry",
             "amount" => $validated["amount"],
+            "gross_amount" => $validated["amount"],
+            "midtrans_fee_amount" => null,
+            "net_amount" => null,
+            "net_amount_source" => "not_applicable_manual",
             "note" => $validated["note"],
             "donation_type" => $validated["donation_type"],
         ]);
@@ -181,7 +186,14 @@ class AdminController extends Controller
             "donor_name" => $validated["donor_name"],
             "donor_phone" => $validated["donor_phone"],
             "donor_email" => $validated["donor_email"],
+            "payment_type" => "manual_entry",
             "amount" => $newAmount, // simpan nominal baru
+            "gross_amount" => $newAmount,
+            "midtrans_fee_amount" => null,
+            "net_amount" => null,
+            "net_amount_source" => "not_applicable_manual",
+            "settlement_time" => null,
+            "midtrans_payload" => null,
             "status" => $newStatus, // simpan status baru
             "note" => $validated["note"],
             "created_at" => $validated["created_at"], // Update waktu donasi
