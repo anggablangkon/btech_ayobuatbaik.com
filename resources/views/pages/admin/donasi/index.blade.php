@@ -119,7 +119,14 @@
                         @forelse ($donations as $donation)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-3 py-2 font-medium text-gray-900 whitespace-nowrap">
-                                    {{ $donation->donation_code }}
+                                    <div class="space-y-1">
+                                        <div>{{ $donation->donation_code }}</div>
+                                        <span
+                                            class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium
+                                                {{ $donation->isManualDonation() ? 'bg-slate-100 text-slate-700' : 'bg-indigo-50 text-indigo-700' }}">
+                                            {{ $donation->payment_method_label }}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td class="px-3 py-2">
                                     <p class="font-medium text-gray-900">{{ $donation->donor_name }}</p>
@@ -129,8 +136,33 @@
                                 <td class="px-3 py-2 text-gray-700 max-w-xs truncate">
                                     {{ $donation->program->title ?? 'Program Dihapus' }}
                                 </td>
-                                <td class="px-3 py-2 font-bold text-right text-green-600 whitespace-nowrap">
-                                    Rp {{ number_format($donation->amount, 0, ',', '.') }}
+                                <td class="px-3 py-2 text-right whitespace-nowrap">
+                                    <div class="space-y-1">
+                                        <p class="font-semibold text-gray-900">
+                                            Gross: Rp {{ number_format($donation->gross_amount_value, 0, ',', '.') }}
+                                        </p>
+                                        <p class="text-[11px] text-gray-500">
+                                            Fee:
+                                            @if ($donation->isManualDonation())
+                                                Tidak kena fee Midtrans
+                                            @elseif (!is_null($donation->fee_amount_value))
+                                                Rp {{ number_format($donation->fee_amount_value, 0, ',', '.') }}
+                                            @else
+                                                -
+                                            @endif
+                                        </p>
+                                        <p
+                                            class="text-[11px] font-semibold {{ !is_null($donation->net_amount_value) ? 'text-emerald-700' : 'text-amber-700' }}">
+                                            Net:
+                                            @if ($donation->isManualDonation())
+                                                Tidak dihitung
+                                            @elseif (!is_null($donation->net_amount_value))
+                                                Rp {{ number_format($donation->net_amount_value, 0, ',', '.') }}
+                                            @else
+                                                {{ $donation->financial_status_label }}
+                                            @endif
+                                        </p>
+                                    </div>
                                 </td>
                                 <td class="px-3 py-2 text-center whitespace-nowrap">
                                     <span
@@ -193,10 +225,43 @@
                     </div>
 
                     <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-500">Nominal:</span>
-                        <span class="text-base font-bold text-green-600">
-                            Rp {{ number_format($donation->amount, 0, ',', '.') }}
+                        <span class="text-xs text-gray-500">Metode:</span>
+                        <span
+                            class="rounded-full px-2 py-0.5 text-[11px] font-medium {{ $donation->isManualDonation() ? 'bg-slate-100 text-slate-700' : 'bg-indigo-50 text-indigo-700' }}">
+                            {{ $donation->payment_method_label }}
                         </span>
+                    </div>
+
+                    <div class="rounded-lg bg-gray-50 p-2.5 text-xs space-y-1">
+                        <div class="flex justify-between items-center gap-3">
+                            <span class="text-gray-500">Gross:</span>
+                            <span class="font-semibold text-gray-900">Rp
+                                {{ number_format($donation->gross_amount_value, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between items-center gap-3">
+                            <span class="text-gray-500">Fee:</span>
+                            <span class="text-gray-700">
+                                @if ($donation->isManualDonation())
+                                    Tidak kena fee Midtrans
+                                @elseif (!is_null($donation->fee_amount_value))
+                                    Rp {{ number_format($donation->fee_amount_value, 0, ',', '.') }}
+                                @else
+                                    -
+                                @endif
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center gap-3">
+                            <span class="text-gray-500">Net:</span>
+                            <span class="font-semibold {{ !is_null($donation->net_amount_value) ? 'text-emerald-700' : 'text-amber-700' }}">
+                                @if ($donation->isManualDonation())
+                                    Tidak dihitung
+                                @elseif (!is_null($donation->net_amount_value))
+                                    Rp {{ number_format($donation->net_amount_value, 0, ',', '.') }}
+                                @else
+                                    {{ $donation->financial_status_label }}
+                                @endif
+                            </span>
+                        </div>
                     </div>
 
                     <div class="pt-2 border-t">

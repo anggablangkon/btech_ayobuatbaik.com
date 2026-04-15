@@ -13,9 +13,9 @@ use Http;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreDonationRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 use Log;
 use Midtrans\Config;
-use Midtrans\Notification;
 use Midtrans\Snap;
 
 class DonasiController extends Controller
@@ -60,6 +60,7 @@ class DonasiController extends Controller
                     'donor_email' => $validated['donor_email'],
                     'donation_type' => $validated['donation_type'],
                     'amount' => $validated['amount'],
+                    'gross_amount' => $validated['amount'],
                     'note' => $validated['note'] ?? null,
                     'status' => 'unpaid',
                     'user_id' => $userId,
@@ -166,6 +167,9 @@ class DonasiController extends Controller
                 ->lockForUpdate()
                 ->firstOrFail();
 
+            $donation->fill($this->buildFinancialTrackingUpdates($notif, $donation));
+            $donation->save();
+
             if ($donation->status === $status) {
                 // Log::info("Skip Callback status {$status} sudah pernah diproses");
                 return;
@@ -241,6 +245,40 @@ Semoga Allah membalas semua kebaikan Anda. Aamiin 🤲";
         });
 
         return response()->json(['message' => 'OK']);
+    }
+
+    private function buildFinancialTrackingUpdates(array $notif, Donation $donation): array
+    {
+        $updates = [
+            'gross_amount' => $this->parseMoneyValue($notif['gross_amount'] ?? null) ?? $donation->gross_amount ?? $donation->amount,
+            'payment_type' => $notif['payment_type'] ?? $donation->payment_type,
+            'midtrans_payload' => $notif,
+        ];
+
+        if (!empty($notif['settlement_time'])) {
+            $updates['settlement_time'] = Carbon::parse($notif['settlement_time']);
+        }
+
+        if ($donation->isMidtransDonation() && in_array($notif['transaction_status'] ?? null, ['capture', 'settlement'], true) && $donation->net_amount === null) {
+            $updates['net_amount_source'] = 'pending_reconciliation';
+        }
+
+        return $updates;
+    }
+
+    private function parseMoneyValue(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (is_int($value)) {
+            return $value;
+        }
+
+        $normalized = preg_replace('/[^\d-]/', '', (string) $value);
+
+        return $normalized === '' ? null : (int) $normalized;
     }
 
     public function showStatus($donationCode)
