@@ -318,9 +318,13 @@
                         <div
                             class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
                             <span class="bg-gray-100 px-3 py-2 text-gray-600 text-sm font-bold">Rp</span>
-                            <input type="number" id="custom-amount" class="flex-1 px-3 py-2 outline-none text-sm"
+                            <input type="text" id="custom-amount" inputmode="numeric"
+                                class="flex-1 px-3 py-2 outline-none text-sm"
                                 placeholder="0">
                         </div>
+                        <p id="selected-amount-preview" class="mt-2 text-xs font-medium text-gray-600">
+                            Nominal yang akan dibayar: Rp 0
+                        </p>
                     </div>
                 </div>
 
@@ -476,23 +480,47 @@
             ========================================= */
             const amountOptions = document.querySelectorAll(".amount-option");
             const customAmountInput = document.getElementById("custom-amount");
+            const selectedAmountPreview = document.getElementById("selected-amount-preview");
 
             let selectedAmount = null;
+            let customAmountValue = null;
+
+            const formatCurrency = (value) => new Intl.NumberFormat("id-ID").format(value || 0);
+
+            function updateSelectedAmountPreview() {
+                const finalAmount = customAmountValue ?? selectedAmount ?? 0;
+
+                if (selectedAmountPreview) {
+                    selectedAmountPreview.textContent = `Nominal yang akan dibayar: Rp ${formatCurrency(finalAmount)}`;
+                }
+            }
 
             amountOptions.forEach(option => {
                 option.addEventListener("click", function() {
                     amountOptions.forEach(opt => opt.classList.remove("selected"));
 
                     this.classList.add("selected");
-                    selectedAmount = this.dataset.amount;
-                    customAmountInput.value = selectedAmount;
+                    selectedAmount = parseInt(this.dataset.amount, 10);
+                    customAmountValue = null;
+                    customAmountInput.value = formatCurrency(selectedAmount);
+                    updateSelectedAmountPreview();
                 });
             });
 
-            customAmountInput.addEventListener("input", function() {
+            customAmountInput.addEventListener("focus", function() {
                 amountOptions.forEach(opt => opt.classList.remove("selected"));
-                selectedAmount = this.value;
+                selectedAmount = null;
+                updateSelectedAmountPreview();
             });
+
+            customAmountInput.addEventListener("input", function() {
+                const numericValue = this.value.replace(/\D/g, "");
+                customAmountValue = numericValue ? parseInt(numericValue, 10) : null;
+                this.value = numericValue ? formatCurrency(customAmountValue) : "";
+                updateSelectedAmountPreview();
+            });
+
+            updateSelectedAmountPreview();
 
             /* =========================================
                 4. PAYMENT + Meta Pixel Event
@@ -517,7 +545,7 @@
                     donorName = "Hamba Allah";
                 }
 
-                const finalAmount = parseInt(selectedAmount || customAmountInput.value || 0);
+                const finalAmount = customAmountValue ?? selectedAmount ?? 0;
 
                 /* ===== VALIDATION ===== */
                 if (!donorName) {

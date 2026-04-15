@@ -81,6 +81,42 @@ class DonationFinancialTrackingTest extends TestCase
     }
 
     #[Test]
+    public function midtrans_notification_qris_langsung_menghitung_estimasi_fee(): void
+    {
+        $program = $this->createProgram();
+
+        $donation = Donation::create([
+            'donation_code' => 'DON-TEST-QRIS',
+            'program_donasi_id' => $program->id,
+            'donor_name' => 'Siti',
+            'donor_phone' => '081234567891',
+            'donor_email' => 'siti@example.com',
+            'donation_type' => 'general',
+            'amount' => 10000,
+            'gross_amount' => 10000,
+            'status' => 'pending',
+        ]);
+
+        $response = $this->postJson('/api/midtrans/notification', [
+            'order_id' => $donation->donation_code,
+            'transaction_status' => 'settlement',
+            'payment_type' => 'qris',
+            'gross_amount' => '10000',
+            'settlement_time' => '2026-04-15 12:35:00',
+        ]);
+
+        $response->assertOk();
+
+        $donation->refresh();
+
+        $this->assertSame('success', $donation->status);
+        $this->assertSame('qris', $donation->payment_type);
+        $this->assertSame(70, $donation->midtrans_fee_amount);
+        $this->assertSame(9930, $donation->net_amount);
+        $this->assertSame('estimated_payment_rule', $donation->net_amount_source);
+    }
+
+    #[Test]
     public function command_reconciliation_mengisi_net_amount_dan_skip_transaksi_manual(): void
     {
         $program = $this->createProgram();

@@ -7,6 +7,7 @@ use App\Jobs\AutoExpireDonationJob;
 use App\Jobs\SendPendingDonationReminder;
 use App\Models\Donation;
 use App\Models\ProgramDonasi;
+use App\Support\MidtransFeeEstimator;
 use App\Models\User;
 use Exception;
 use Http;
@@ -20,12 +21,15 @@ use Midtrans\Snap;
 
 class DonasiController extends Controller
 {
+    private MidtransFeeEstimator $feeEstimator;
+
     public function __construct()
     {
         Config::$serverKey = config('services.midtrans.serverKey');
         Config::$isProduction = config('services.midtrans.is_production');
         Config::$isSanitized = config('services.midtrans.is_sanitized');
         Config::$is3ds = config('services.midtrans.is_3ds');
+        $this->feeEstimator = new MidtransFeeEstimator();
     }
 
     public function store(StoreDonationRequest $request, $programDonasiId)
@@ -260,7 +264,13 @@ Semoga Allah membalas semua kebaikan Anda. Aamiin 🤲";
         }
 
         if ($donation->isMidtransDonation() && in_array($notif['transaction_status'] ?? null, ['capture', 'settlement'], true) && $donation->net_amount === null) {
-            $updates['net_amount_source'] = 'pending_reconciliation';
+            $estimatedAmounts = $this->feeEstimator->estimate($updates['payment_type'], (int) $updates['gross_amount']);
+
+            if ($estimatedAmounts !== null) {
+                $updates = array_merge($updates, $estimatedAmounts);
+            } else {
+                $updates['net_amount_source'] = 'pending_reconciliation';
+            }
         }
 
         return $updates;

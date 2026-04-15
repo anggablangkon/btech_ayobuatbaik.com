@@ -155,6 +155,7 @@ class Donation extends Model
         return match ($this->net_amount_source) {
             "midtrans_report" => "Final dari report Midtrans",
             "midtrans_status_api" => "Final dari Midtrans API",
+            "estimated_payment_rule" => "Estimasi otomatis",
             "pending_reconciliation" => "Menunggu sinkronisasi fee",
             default => "Belum dihitung",
         };

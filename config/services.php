@@ -39,6 +39,15 @@ return [
         "is_production" => env("MIDTRANS_IS_PRODUCTION", false),
         "is_sanitized" => env("MIDTRANS_IS_SANITIZED", true),
         "is_3ds" => env("MIDTRANS_IS_3DS", true),
+        "fee_estimator" => [
+            "percentage_rates" => [
+                "qris" => (float) env("MIDTRANS_QRIS_FEE_RATE", 0.007),
+            ],
+            "flat_fees" => [
+                "echannel" => (int) env("MIDTRANS_ECHANNEL_FEE", 4400),
+                "bank_transfer" => env("MIDTRANS_BANK_TRANSFER_FEE"),
+            ],
+        ],
     ],
     "google" => [
         "client_id" => env("GOOGLE_CLIENT_ID"),
