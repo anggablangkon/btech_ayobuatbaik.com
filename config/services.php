@@ -42,10 +42,12 @@ return [
         "fee_estimator" => [
             "percentage_rates" => [
                 "qris" => (float) env("MIDTRANS_QRIS_FEE_RATE", 0.007),
+                "gopay" => (float) env("MIDTRANS_GOPAY_FEE_RATE", 0.02),
+                "shopeepay" => (float) env("MIDTRANS_SHOPEEPAY_FEE_RATE", 0.02),
             ],
             "flat_fees" => [
                 "echannel" => (int) env("MIDTRANS_ECHANNEL_FEE", 4400),
-                "bank_transfer" => env("MIDTRANS_BANK_TRANSFER_FEE"),
+                "bank_transfer" => (int) env("MIDTRANS_BANK_TRANSFER_FEE", 4400),
             ],
         ],
     ],

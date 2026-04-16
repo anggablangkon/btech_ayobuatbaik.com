@@ -285,9 +285,19 @@ class ReconcileMidtransReport extends Command
             return $value;
         }
 
-        $normalized = preg_replace('/[^\d-]/', '', (string) $value);
+        // Handle numeric strings with decimals (e.g., "5000.00")
+        if (is_numeric($value)) {
+            return (int) round((float) $value);
+        }
 
-        return $normalized === '' ? null : (int) $normalized;
+        // Fallback: strip everything except digits, minus, and decimal point
+        $normalized = preg_replace('/[^\d.\-]/', '', (string) $value);
+
+        if ($normalized === '' || $normalized === '-') {
+            return null;
+        }
+
+        return (int) round((float) $normalized);
     }
 
     private function normalizeFeeAmount(?int $value): ?int

@@ -276,6 +276,13 @@ Semoga Allah membalas semua kebaikan Anda. Aamiin 🤲";
         return $updates;
     }
 
+    /**
+     * Parse monetary value from Midtrans payload.
+     *
+     * Midtrans sends amounts as decimal strings (e.g., "5000.00").
+     * Old approach stripped non-digit chars, turning "5000.00" → "500000".
+     * Now we parse as float first, then round to int.
+     */
     private function parseMoneyValue(mixed $value): ?int
     {
         if ($value === null || $value === '') {
@@ -286,9 +293,19 @@ Semoga Allah membalas semua kebaikan Anda. Aamiin 🤲";
             return $value;
         }
 
-        $normalized = preg_replace('/[^\d-]/', '', (string) $value);
+        // Handle numeric strings with decimals (e.g., "5000.00" from Midtrans)
+        if (is_numeric($value)) {
+            return (int) round((float) $value);
+        }
 
-        return $normalized === '' ? null : (int) $normalized;
+        // Fallback: strip everything except digits, minus, and decimal point
+        $normalized = preg_replace('/[^\d.\-]/', '', (string) $value);
+
+        if ($normalized === '' || $normalized === '-') {
+            return null;
+        }
+
+        return (int) round((float) $normalized);
     }
 
     public function showStatus($donationCode)
