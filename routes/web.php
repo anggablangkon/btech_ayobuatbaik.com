@@ -20,6 +20,7 @@ use App\Http\Controllers\KitabController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\KitabController as AdminKitabController;
+use App\Http\Controllers\QurbanParticipantController;
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
@@ -36,7 +37,7 @@ Route::get("/kitab/api/urls", [KitabController::class, "getAllUrls"])->name("hom
 Route::get("/kitab/{kitabSlug}", [KitabController::class, "show"])->name("home.kitab.show");
 Route::get("/kitab/{kitabSlug}/{chapterSlug}", [KitabController::class, "showChapter"])->name("home.kitab.chapter");
 Route::get("/kitab/{kitabSlug}/{chapterSlug}/maqolah/{id}", [KitabController::class, "showMaqolah"])->name("home.kitab.maqolah");
-    
+
 Route::get("/programs", [HomeController::class, "programs"])->name("home.program");
 Route::get("/program/{slug}", [HomeController::class, "program"])->name("home.program.show");
 
@@ -45,6 +46,11 @@ Route::get("/berita/{slug}", [HomeController::class, "showBerita"])->name("home.
 
 // donasi
 Route::get("/donate/status/{code}", [DonasiController::class, "showStatus"])->name("donation.status");
+
+// Kupon qurban (publik — tanpa login)
+Route::get('/qurban/voucher/{coupon_code}', [QurbanParticipantController::class, 'publicVoucher'])
+    ->name('qurban.voucher.public')
+    ->where('coupon_code', '[A-Za-z0-9]+');
 
 Route::get("/search", [HomeController::class, "search"])->name("home.search");
 
@@ -98,6 +104,12 @@ Route::middleware(["auth", "isAdmin"])
         Route::resource('broadcast', BroadcastController::class);
         Route::post('broadcast/process-queue', [BroadcastController::class, 'processQueue'])->name('broadcast.process_queue');
 
+        // Qurban (static paths must be registered before resource {qurban})
+        Route::get('qurban/export', [QurbanParticipantController::class, 'export'])->name('qurban.export');
+        Route::get('qurban/scan-coupon', [QurbanParticipantController::class, 'scanCouponPage'])->name('qurban.scan_coupon');
+        Route::post('qurban/scan-coupon/submit', [QurbanParticipantController::class, 'submitScanCoupon'])->name('qurban.scan_coupon.submit');
+        Route::resource('qurban', QurbanParticipantController::class);
+        Route::post('qurban/{qurban}/send-whatsapp', [QurbanParticipantController::class, 'sendQurbanWhatsaap'])->name('qurban.send_whatsapp');
         // Site Settings
         Route::get("settings", [SettingsController::class, "index"])->name("settings.index");
         Route::post("settings", [SettingsController::class, "update"])->name("settings.update");

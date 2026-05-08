@@ -44,6 +44,12 @@
             <span>Transaksi Donasi</span>
         </a>
 
+        <a href="{{ route('admin.qurban.index') }}"
+            class="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-gray-800 transition-colors {{ request()->routeIs('admin.qurban.*') ? 'bg-gray-800' : '' }}">
+            <i class="fas fa-cow w-5"></i>
+            <span>Qurban</span>
+        </a>
+
         <a href="{{ route('admin.sliders.index') }}"
             class="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-gray-800 transition-colors {{ request()->routeIs('admin.sliders.*') ? 'bg-gray-800' : '' }}">
             <i class="fas fa-images"></i>
