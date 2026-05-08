@@ -119,7 +119,7 @@
                             class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-primary">{{ old('note', $qurbanParticipant->note) }}</textarea>
                     </div> --}}
 
-                    <div>
+                    {{-- <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <select name="status"
                             class="w-full border-0 border-b border-gray-300 focus:border-primary focus:ring-0 px-0 py-2">
@@ -129,7 +129,7 @@
                                     {{ $label }}</option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
                 </div>
 
                 {{-- <div class="border-t border-gray-100 pt-6">

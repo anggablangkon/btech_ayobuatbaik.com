@@ -48,8 +48,7 @@
                         <select name="status" class="min-w-[8rem] rounded border px-2 py-2 text-sm">
                             <option value="">Semua Status</option>
                             @foreach (['pending' => 'Pending', 'taken' => 'Diambil', 'rejected' => 'Ditolak'] as $val => $label)
-                                <option value="{{ $val }}"
-                                    {{ request('status') === $val ? 'selected' : '' }}>
+                                <option value="{{ $val }}" {{ request('status') === $val ? 'selected' : '' }}>
                                     {{ $label }}
                                 </option>
                             @endforeach
@@ -79,9 +78,10 @@
                     </div>
                 </div>
                 <div class="flex flex-col flex-wrap items-end gap-2 text-sm sm:flex-row">
-                    <div class="flex flex-col min-w-[16rem]">
+                    <div class="flex min-w-[16rem] flex-col">
                         <label for="search">Cari nama</label>
-                        <input type="text" name="search" id="search" value="{{ request('search') }}" class="rounded-lg border px-2 py-2 text-sm">
+                        <input type="text" name="search" id="search" value="{{ request('search') }}"
+                            class="rounded-lg border px-2 py-2 text-sm">
                     </div>
                     <div class="flex flex-col">
                         <button type="submit"
@@ -157,16 +157,19 @@
                                                 class="fa-brands fa-whatsapp"></i></button>
                                     </form>
 
-                                    <form id="del-q-{{ $p->id }}" action="{{ route('admin.qurban.destroy', $p) }}"
-                                        method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button"
-                                            onclick="confirmDelete('del-q-{{ $p->id }}', 'Hapus peserta ini?')"
-                                            class="text-red-600 hover:text-red-800">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    @if ($p->status !== 'taken')
+                                        <form id="del-q-{{ $p->id }}"
+                                            action="{{ route('admin.qurban.destroy', $p) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button"
+                                                onclick="confirmDelete('del-q-{{ $p->id }}', 'Hapus peserta ini?')"
+                                                class="text-red-600 hover:text-red-800">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
