@@ -42,7 +42,7 @@
             <h3 class="mt-3 text-base font-semibold text-gray-900">Filter</h3>
             <form id="qurbanFilters" method="GET"
                 class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div class="flex flex-col flex-wrap items-end gap-2 text-sm sm:flex-row">
+                <div class="sm:flex flex-col flex-wrap items-end gap-2 text-sm sm:flex-row space-y-3">
                     <div class="flex flex-col gap-1">
                         <label class="text-xs text-gray-600">Status</label>
                         <select name="status" class="min-w-[8rem] rounded border px-2 py-2 text-sm">
@@ -77,7 +77,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="flex flex-col flex-wrap items-end gap-2 text-sm sm:flex-row">
+                <div class="sm:flex flex-col flex-wrap items-end gap-2 text-sm sm:flex-row space-y-3">
                     <div class="flex min-w-[16rem] flex-col">
                         <label for="search">Cari nama</label>
                         <input type="text" name="search" id="search" value="{{ request('search') }}"
@@ -85,7 +85,7 @@
                     </div>
                     <div class="flex flex-col">
                         <button type="submit"
-                            class="d-inline-flex mb-auto self-end rounded-lg bg-secondary px-4 py-2 text-sm text-white transition hover:opacity-95">
+                            class="d-block mb-auto self-end rounded-lg bg-secondary px-4 py-2 text-sm text-white transition hover:opacity-95 w-full">
                             Terapkan
                         </button>
                     </div>
