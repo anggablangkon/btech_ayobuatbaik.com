@@ -4,7 +4,7 @@
 @section('page-title', 'Scan Kupon Qurban')
 
 @section('content')
-    <div class="max-w-5xl mx-auto mt-4 space-y-6">
+    <div class="max-w-5xl mx-auto w-screen sm:w-full min-w-0 mt-4 space-y-6 overflow-auto">
         <div class="flex flex-wrap items-center gap-3">
             <a href="{{ route('admin.qurban.index') }}"
                 class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
@@ -12,8 +12,8 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 space-y-4 min-w-0 overflow-hidden">
                 <h2 class="text-base font-semibold text-gray-900">Input kupon</h2>
                 <p class="text-sm text-gray-600">Ketik kode atau pindai QR pada voucher peserta.</p>
 
@@ -31,29 +31,31 @@
                     </button>
                 </form>
 
-                <div class="border-t border-gray-100 pt-4">
-                    <div class="flex flex-wrap items-center gap-2 mb-2">
+                <div class="border-t border-gray-100 pt-4 min-w-0">
+                    <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2 mb-2">
                         <button type="button" id="btn-start-qr"
-                            class="inline-flex items-center gap-2 border border-gray-300 bg-white text-gray-800 px-3 py-2 rounded-lg text-sm hover:bg-gray-50">
+                            class="inline-flex items-center justify-center gap-2 w-full sm:w-auto border border-gray-300 bg-white text-gray-800 px-3 py-2.5 rounded-lg text-sm hover:bg-gray-50">
                             <i class="fas fa-camera"></i> Aktifkan kamera
                         </button>
                         <button type="button" id="btn-stop-qr" disabled
-                            class="inline-flex items-center gap-2 border border-gray-200 text-gray-400 px-3 py-2 rounded-lg text-sm cursor-not-allowed">
+                            class="inline-flex items-center justify-center gap-2 w-full sm:w-auto border border-gray-200 text-gray-400 px-3 py-2.5 rounded-lg text-sm cursor-not-allowed">
                             <i class="fas fa-stop"></i> Matikan kamera
                         </button>
                     </div>
-                    <div id="qr-reader" class="rounded-lg overflow-hidden bg-gray-50 max-w-md"></div>
+                    <div id="qr-reader"
+                        class="rounded-lg overflow-hidden bg-gray-50 w-full max-w-full sm:max-w-md mx-auto lg:mx-0 min-h-[220px] sm:min-h-[240px]"></div>
                     <p id="qr-status" class="hidden text-xs text-amber-700 mt-2"></p>
                 </div>
             </div>
 
-            <div id="detail-panel" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hidden">
+            <div id="detail-panel"
+                class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 min-w-0 overflow-hidden hidden">
                 <h2 class="text-base font-semibold text-gray-900 mb-4">Detail pemilik kupon</h2>
                 <div id="detail-alert"
                     class="hidden mb-4 p-3 rounded-lg text-sm border border-red-200 bg-red-50 text-red-800"></div>
                 <div id="detail-success"
                     class="hidden mb-4 p-3 rounded-lg text-sm border border-green-200 bg-green-50 text-green-800"></div>
-                <dl id="detail-dl" class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                <dl id="detail-dl" class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-3 text-sm break-words">
                 </dl>
                 <div id="detail-items" class="mt-4 hidden">
                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Item qurban</h3>
@@ -66,49 +68,49 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
-                <h2 class="text-base font-semibold text-gray-900">Riwayat scan hari ini</h2>
-                <span class="text-xs text-gray-500">{{ now()->translatedFormat('l, d F Y') }}</span>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 min-w-0 overflow-hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 min-w-0">
+                <h2 class="text-base font-semibold text-gray-900 min-w-0">Riwayat scan hari ini</h2>
+                <span class="text-xs text-gray-500 shrink-0">{{ now()->translatedFormat('l, d F Y') }}</span>
             </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
+            <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 overscroll-x-contain touch-pan-x">
+                <table class="w-full min-w-[42rem] text-sm">
                     <thead class="text-gray-600 bg-gray-50">
                         <tr>
-                            <th class="px-3 py-2 text-left">Waktu</th>
-                            <th class="px-3 py-2 text-left">Kode</th>
-                            <th class="px-3 py-2 text-left">Pemilik</th>
-                            <th class="px-3 py-2 text-left">Kontak</th>
-                            <th class="px-3 py-2 text-left">Total Paket</th>
-                            <th class="px-3 py-2 text-left">Status</th>
-                            <th class="px-3 py-2 text-left">Oleh</th>
+                            <th class="px-2 sm:px-3 py-2 text-left whitespace-nowrap">Waktu</th>
+                            <th class="px-2 sm:px-3 py-2 text-left whitespace-nowrap">Kode</th>
+                            <th class="px-2 sm:px-3 py-2 text-left">Pemilik</th>
+                            <th class="px-2 sm:px-3 py-2 text-left whitespace-nowrap">Kontak</th>
+                            <th class="px-2 sm:px-3 py-2 text-left whitespace-nowrap">Total Paket</th>
+                            <th class="px-2 sm:px-3 py-2 text-left whitespace-nowrap">Status</th>
+                            <th class="px-2 sm:px-3 py-2 text-left">Oleh</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100" id="history-body">
                         @if ($todayScans->isEmpty())
                             <tr id="history-placeholder">
-                                <td colspan="6" class="px-3 py-4 text-sm text-gray-500">Belum ada kupon yang di-scan
+                                <td colspan="7" class="px-3 py-4 text-sm text-gray-500">Belum ada kupon yang di-scan
                                     hari ini.</td>
                             </tr>
                         @else
                             @foreach ($todayScans as $scan)
                                 <tr data-scan-row="{{ $scan->id }}">
-                                    <td class="px-3 py-2 whitespace-nowrap text-gray-700">
+                                    <td class="px-2 sm:px-3 py-2 whitespace-nowrap text-gray-700">
                                         {{ $scan->created_at->format('H:i:s') }}
                                     </td>
-                                    <td class="px-3 py-2 font-mono font-medium">
+                                    <td class="px-2 sm:px-3 py-2 font-mono font-medium break-all max-w-[9rem]">
                                         {{ $scan->coupon_code }}
                                     </td>
-                                    <td class="px-3 py-2">
+                                    <td class="px-2 sm:px-3 py-2 break-words max-w-[10rem] sm:max-w-none">
                                         {{ $scan->participant?->full_name ?? '—' }}
                                     </td>
-                                    <td class="px-3 py-2">
+                                    <td class="px-2 sm:px-3 py-2 whitespace-nowrap">
                                         {{ $scan->participant?->contact_number ?? '—' }}
                                     </td>
-                                    <td class="px-3 py-2">
+                                    <td class="px-2 sm:px-3 py-2 whitespace-nowrap">
                                         {{ $scan->participant?->total_coupon ?? '—' }}
                                     </td>
-                                    <td class="px-3 py-2">
+                                    <td class="px-2 sm:px-3 py-2 whitespace-nowrap">
                                         @php($st = $scan->participant?->status)
                                         @if ($st)
                                             <span
@@ -120,7 +122,7 @@
                                             —
                                         @endif
                                     </td>
-                                    <td class="px-3 py-2 text-gray-600">
+                                    <td class="px-2 sm:px-3 py-2 text-gray-600 break-words max-w-[8rem] sm:max-w-none">
                                         {{ $scan->scanner?->name ?? '—' }}
                                     </td>
                                 </tr>
@@ -252,14 +254,17 @@
                 const st = p.status || '';
                 const stClass = st === 'taken' ? 'bg-green-100 text-green-800' : (st === 'rejected' ?
                     'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800');
+                const totalPaket = (p.total_coupon !== undefined && p.total_coupon !== null && p.total_coupon !== '') ?
+                    String(p.total_coupon) : '—';
                 tr.innerHTML =
-                    '<td class="px-3 py-2 whitespace-nowrap text-gray-700">' + timeStr + '</td>' +
-                    '<td class="px-3 py-2 font-mono font-medium">' + (p.coupon_code || '') + '</td>' +
-                    '<td class="px-3 py-2">' + (p.full_name || '—') + '</td>' +
-                    '<td class="px-3 py-2">' + (p.contact_number || '—') + '</td>' +
-                    '<td class="px-3 py-2"><span class="inline-flex px-2 py-0.5 rounded text-xs font-medium ' +
+                    '<td class="px-2 sm:px-3 py-2 whitespace-nowrap text-gray-700">' + timeStr + '</td>' +
+                    '<td class="px-2 sm:px-3 py-2 font-mono font-medium break-all max-w-[9rem]">' + escapeHtml(p.coupon_code || '') + '</td>' +
+                    '<td class="px-2 sm:px-3 py-2 break-words max-w-[10rem] sm:max-w-none">' + escapeHtml(p.full_name || '—') + '</td>' +
+                    '<td class="px-2 sm:px-3 py-2 whitespace-nowrap">' + escapeHtml(p.contact_number || '—') + '</td>' +
+                    '<td class="px-2 sm:px-3 py-2 whitespace-nowrap">' + escapeHtml(totalPaket) + '</td>' +
+                    '<td class="px-2 sm:px-3 py-2 whitespace-nowrap"><span class="inline-flex px-2 py-0.5 rounded text-xs font-medium ' +
                     stClass + '">' + (st ? st.charAt(0).toUpperCase() + st.slice(1) : '—') + '</span></td>' +
-                    '<td class="px-3 py-2 text-gray-600">' + escapeHtml(scannerName) + '</td>';
+                    '<td class="px-2 sm:px-3 py-2 text-gray-600 break-words max-w-[8rem] sm:max-w-none">' + escapeHtml(scannerName) + '</td>';
                 historyBody.insertBefore(tr, historyBody.firstChild);
             }
 
@@ -316,9 +321,13 @@
                         facingMode: 'environment'
                     }, {
                         fps: 10,
-                        qrbox: {
-                            width: 220,
-                            height: 220
+                        qrbox: function(viewfinderWidth, viewfinderHeight) {
+                            var edge = Math.min(viewfinderWidth, viewfinderHeight);
+                            var size = Math.max(140, Math.min(260, Math.floor(edge * 0.72)));
+                            return {
+                                width: size,
+                                height: size
+                            };
                         }
                     }, function(decodedText) {
                         submitCode(decodedText);
