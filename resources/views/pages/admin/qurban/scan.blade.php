@@ -267,7 +267,6 @@
                 const raw = (code || '').trim();
                 if (!raw) return;
                 detailAlert.classList.add('hidden');
-                detailStatus.classList.add('hidden');
                 const fd = new FormData();
                 fd.append('coupon_code', raw);
                 fd.append('_token', token);
